@@ -1,0 +1,49 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.5rem 4% !important;
+  color: #fff;
+
+  .navbar-brand {
+    a {
+      font-weight: bold;
+      font-size: 4.5rem;
+    }
+  }
+
+  .navbar-collapse {
+    display: flex; 
+    justify-content: space-between;
+    width: 65%;
+    align-items: center;
+
+    .navbar-nav {
+      display: flex;
+      align-items: center;
+
+      .nav-item {
+        margin: 0 1rem;
+        
+        .nav-link  {
+          text-align: center;
+        }
+      }
+    }
+
+    .btn-signup {
+      display: block;
+      box-sizing: border-box;
+      min-width: 186px;
+      padding: 1rem 3rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 5rem 5rem 5rem 0;
+      transition: background-color 0.3s linear;
+      
+      &:hover {
+        background-color: #f33;     
+      }
+    }
+  }
+}
