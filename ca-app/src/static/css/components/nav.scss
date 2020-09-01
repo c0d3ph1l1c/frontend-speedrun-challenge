@@ -1,48 +1,86 @@
 .navbar {
-  display: flex;
-  justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  padding: 1.5rem 4% !important;
+  padding: 0 3.5% 2rem 3.5% !important;
   color: #fff;
 
   .navbar-brand {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;;
+    box-sizing: border-box;
+    margin: 0;  
+    padding-left: 2rem;
+
     a {
       font-weight: bold;
-      font-size: 4.5rem;
+      font-size: 2.5rem;
+      transition: font-size 0.5s linear;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .navbar-brand {
+      a {
+        font-size: 4.5rem;
+      }
     }
   }
 
   .navbar-collapse {
+    box-sizing: border-box;
     display: flex; 
-    justify-content: space-between;
-    width: 65%;
     align-items: center;
+    font-weight: bold;
 
     .navbar-nav {
       display: flex;
+      justify-content: flex-end;
       align-items: center;
 
       .nav-item {
-        margin: 0 1rem;
+        margin: 0 0.5rem;
+        transition: margin 0.5s linear;
         
         .nav-link  {
+          display: block;
+          padding: 1.8rem 0;
           text-align: center;
+        }
+      }
+
+      @media screen and (min-width: 1200px) {
+        .nav-item {
+          margin: 0 1rem;
         }
       }
     }
 
-    .btn-signup {
-      display: block;
-      box-sizing: border-box;
-      min-width: 186px;
-      padding: 1rem 3rem;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 5rem 5rem 5rem 0;
-      transition: background-color 0.3s linear;
-      
-      &:hover {
-        background-color: #f33;     
+    .btn-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex: 0 0 22%;
+      max-width: 22%;
+
+      .btn-signup {
+        display: inline-block;
+        padding: 0.6rem 2.4rem;
+        font-size: 0.8rem;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 5rem 5rem 5rem 0;
+        transition: background-color 0.3s linear, font-size 0.5s linear, padding 0.5s linear;
+        
+        &:hover {
+          background-color: #f33;     
+        }
+      }
+
+      @media screen and (min-width: 1200px) {
+        .btn-signup {
+          font-size: 1rem;
+          padding: 0.8rem 2.8rem;
+        }
       }
     }
   }
