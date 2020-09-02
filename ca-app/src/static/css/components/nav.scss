@@ -87,12 +87,12 @@
     overflow: hidden;
     visibility: hidden;
 
-    &.show {
+    &.expanding, &.expanded, &.collapsing {
       visibility: visible;
     }
     
     @media screen and (min-width: 992px) {
-      padding: 0;
+      height: auto!important;
       background-color: transparent;
       overflow: visible;
       visibility: visible;

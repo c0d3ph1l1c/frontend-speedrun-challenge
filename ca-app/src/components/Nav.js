@@ -5,14 +5,70 @@ class Nav extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      navExpanded: false,
-      navHeight: 'auto'
+      navHeight: 'auto',
+      navClass: ''
     };
+    this.fullNavHeight = 0;
+    this.toggleNavDone = true;
+    this.transitionBegin = false;
     this.navRef = React.createRef();
   }
 
   toggleNav = () => {
-    this.setState(prevState => ({ navExpanded: !prevState.navExpanded }));
+    if(this.toggleNavDone) {
+      const { navHeight, navClass } = this.state;
+      this.fullNavHeight = this.navRef.current.offsetHeight;
+
+      const newState = !navClass ? 
+        ({
+          navHeight: '0px',
+          navClass: 'expanding'
+        }):
+        ({
+          navHeight: this.navRef.current.offsetHeight + 'px',
+          navClass: 'collapsing'
+        });
+      this.toggleNavDone = false;
+      this.setState(newState);
+    }
+  }
+
+  resetLock = () => {
+    setTimeout(() => {
+      this.toggleNavDone = true;
+      this.transitionBegin = false;
+    }, 100);
+  }
+
+  componentDidUpdate() {
+    if (!this.transitionBegin) {
+      this.transitionBegin = true;
+
+      switch(this.state.navClass) {
+        case 'expanding': 
+          setTimeout(() => this.setState({ navHeight: `${this.fullNavHeight}px`}), 0);
+          setTimeout(() => {
+            this.setState({ 
+              navHeight: 'auto', 
+              navClass: 'expanded' 
+            }, this.resetLock);
+          }, 300);
+          break;
+        
+        case 'collapsing':
+          setTimeout(() => this.setState({ navHeight: '0px' }), 0);
+          setTimeout(() => {
+            this.setState({ 
+              navHeight: 'auto', 
+              navClass: '' 
+            }, this.resetLock);
+          }, 300);
+          break;  
+          
+        default:
+          break;
+      }
+    }
   }
 
   render() {
@@ -35,7 +91,7 @@ class Nav extends Component {
             </div>
             <div 
               ref={this.navRef} 
-              className={`navbar-collapse ml-auto mr-auto col-11 col-lg-10 ${this.state.navExpanded && 'show'}`}
+              className={`navbar-collapse ml-auto mr-auto col-11 col-lg-10 ${this.state.navClass}`}
               style={{ height: this.state.navHeight }}
             >
               <div className="container-fluid nav-wrapper"> 
