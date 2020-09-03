@@ -1,5 +1,4 @@
 .navbar {
-  position: absolute;
   top: 0;
   left: 0;
   box-sizing: border-box;
@@ -7,8 +6,47 @@
   padding: 0!important;
   color: #fff;
 
+  &.navbar-absolute {
+    position: absolute;
+  }
+
+  &.navbar-fixed {
+    position: fixed;
+    transform: translateY(-100%);
+    animation: slide-in 0.5s ease 0.5s forwards;
+    
+    @media screen and (max-width: 991px) {
+      .heading-bar {
+        background-color: #884bdf;
+        box-shadow: 0 1px 10px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .col-96p {
+        flex: 0 0 96%;
+        max-width: 96%;
+      }
+    }
+    
+    @media screen and (min-width: 992px) {
+      box-shadow: 0 1px 10px 5px rgba(0, 0, 0, 0.1);
+      background-color: #884bdf;
+    }
+
+    .navbar-brand a {
+      font-size: 3rem;
+    }
+
+    .navbar-collapse .navbar-nav .nav-item .nav-link {
+      padding: 0.5rem 0;
+    }
+  }
+
+  @keyframes slide-in {
+    100% { transform: translateY(0); }
+  }
+
   @media screen and (min-width: 992px) {
-    padding: 0 3.5% 2rem 3.5%!important;
+    padding: 0 3.5% 0 3.5%!important;
   }
 
   .navbar-brand {
@@ -85,17 +123,20 @@
     background-color: #5B32B4;
     transition: height 0.3s ease-out;
     overflow: hidden;
-    visibility: hidden;
 
     &.expanding, &.expanded, &.collapsing {
       visibility: visible;
+    }
+
+    &.collapsed {
+      visibility: hidden;
     }
     
     @media screen and (min-width: 992px) {
       height: auto!important;
       background-color: transparent;
       overflow: visible;
-      visibility: visible;
+      visibility: visible!important;
     }
 
     .nav-wrapper {
