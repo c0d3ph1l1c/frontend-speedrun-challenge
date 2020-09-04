@@ -14,7 +14,7 @@ class Nav extends Component {
     this.toggleNavDone = true;
     this.navTransitionBegin = false;
     this.navRef = React.createRef();
-    this.navbarRef = React.createRef();
+    this.navbrandRef = React.createRef();
   }
 
   toggleNav = () => {
@@ -47,7 +47,8 @@ class Nav extends Component {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
     const { navbarClass } = this.state;
-    const thresholdScroll = this.navbarRef.current.offsetHeight - 25;
+    const { offsetTop, offsetHeight } = this.navbrandRef.current;
+    const thresholdScroll = offsetTop + offsetHeight;
 
     if(scrollY > thresholdScroll &&
        navbarClass === 'navbar-absolute') {
@@ -113,14 +114,13 @@ class Nav extends Component {
         <div className="container-fluid">
           <div className="row">
             <div 
-              ref={this.navbarRef}
               className="heading-bar col-lg-2"
             >
               <div className="row h-100">
                 <div className="col-11 col-96p ml-auto mr-auto">
                   <div className="row h-100 mt-auto mb-auto">
                     <h1 className="navbar-brand mr-auto">
-                      <a href="#">Ca.</a>
+                      <a ref={this.navbrandRef} href="#">Ca.</a>
                     </h1>
                     <button 
                       className="navbar-toggle d-block d-lg-none" 

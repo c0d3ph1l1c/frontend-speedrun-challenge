@@ -8,12 +8,14 @@
 
   &.navbar-absolute {
     position: absolute;
+    z-index: 4;
   }
 
   &.navbar-fixed {
     position: fixed;
     transform: translateY(-100%);
     animation: slide-in 0.5s ease 0.5s forwards;
+    z-index: 4;
     
     @media screen and (max-width: 991px) {
       .heading-bar {
@@ -150,9 +152,11 @@
       flex-direction: column;
       justify-content: flex-end;
       align-items: flex-start;
+      padding: 1rem 0.5rem;
 
       @media screen and (min-width: 992px) {
         flex-direction: row;
+        padding: 1rem 0;
       }
 
       .nav-item {
@@ -165,12 +169,12 @@
 
         .nav-link  {
           display: block;
-          padding: 0.4rem 0;
+          padding: 0.5rem 0;
           text-align: center;
           transition: padding 0.3s ease-out;
 
           @media screen and (min-width: 768px) {
-            padding: 0.5rem 0;
+            padding: 0.6rem 0;
           }
 
           @media screen and (min-width: 992px) {
@@ -204,7 +208,7 @@
         transition: background-color 0.3s linear, font-size 0.3s ease-out, padding 0.3s ease-out;
         
         @media screen and (min-width: 768px) {
-          padding: 0.6rem 2.4rem;
+          padding: 0.7rem 2.5rem;
           font-size: 0.8rem;
         }
 
@@ -214,7 +218,7 @@
         }
 
         &:hover {
-          background-color: #f33;     
+          background-color: #ef3a86;     
         }
       }
     }

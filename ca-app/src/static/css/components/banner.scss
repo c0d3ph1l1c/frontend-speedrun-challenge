@@ -1,0 +1,144 @@
+.banner {
+  position: relative;
+  width: 100%;
+  height: 900px;
+  background: url("../../images/welcome-bg.webp") no-repeat center bottom/cover;
+  color: #fff;
+
+  .container {
+    height: 100%;
+
+    .banner-heading {
+      position: relative;
+
+      &::before {
+        content: 'C';
+        position: absolute;
+        font-size: 16rem;
+        font-weight: bold;
+        line-height: 1;
+        color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-30%);
+
+        @media screen and (min-width: 480px) {
+          font-size: 18rem;
+          transform: translateY(-38%);
+        }
+
+        @media screen and (min-width: 768px) {
+          transform: translateY(-30%);
+        }
+
+        @media screen and (min-width: 768px) {
+          font-size: 21rem;
+        }
+      }
+
+      h2 {
+        font-size: 3rem;
+        padding-left: 1.5rem;
+
+        @media screen and (min-width:480px) {
+          font-size: 4.5rem;
+        }
+
+        @media screen and (min-width: 768px) {
+          font-size: 6.2rem;
+        }
+      }
+
+      p {
+        color: rgba(255, 255, 255, 0.9);
+        padding: 0.75rem 0 0 1.5rem;
+      }
+    }
+
+    form {
+      position: relative;
+      margin-top: 3.5rem;
+      padding-left: 2rem;
+      z-index: 2;
+
+      @media screen and (max-width: 575px) {
+        flex-direction: column;
+      }
+      
+      @media screen and (min-width: 768px) {
+        margin-top: 4.5rem;
+      }
+
+      @media screen and (min-width: 991px) {
+        margin-top: 6.5rem;
+      }
+      
+      input[type="text"] {
+        max-width: 93%;
+        margin: 0 0.5rem 1rem 0;
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 1.5rem;
+        outline: none;
+        background: rgba(255, 255, 255, 0.2);
+
+        &::placeholder {
+          font-size: 0.9rem;
+          font-weight: bold;
+          color: rgba(255, 255, 255, 0.5);
+        }
+
+        &:focus {
+          box-shadow: 1px 1px 3px 3px #6455e8, -1px -1px 3px 3px #6455e8;
+        }
+      }
+
+      input[type="submit"] {
+        width: 11rem;
+        height: 3rem;
+        margin-left: 0.5rem;
+        font-weight: bold;
+        font-size: 0.95rem;
+        border: none; 
+        border-radius: 1.5rem 1.5rem 1.5rem 0;
+        background: #ef3a86;
+        color: #fff;
+        transition: background 0s ease;
+        
+        &:hover {
+          background: #6455e8;
+          transition: background 0.5s ease;
+        }
+      }
+    }
+  }
+  
+  img {
+    position: absolute;
+    bottom: -8%;
+    right: 0;
+    width: 88%;
+    z-index: 3;
+
+    @media screen and (min-width: 480px) {
+      right: 0%;
+      bottom: -12%;
+      width: 75%;
+    }
+
+    @media screen and (min-width: 768px) {
+      bottom: -11%;
+      right: 0;
+      width: 50%;
+    }
+    
+    @media screen and (min-width: 992px) {
+      // bottom: -11%;
+      right: 4%;
+    }
+
+    @media screen and (min-width: 1200px) {
+      bottom: -14.5%;
+      right: 6.5%;
+      width: 45%;
+    }
+  }
+}

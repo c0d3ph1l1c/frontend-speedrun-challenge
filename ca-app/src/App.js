@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Nav from './components/Nav';
-import './static/css/components/header.scss';
+import Banner from './components/Banner';
 
 class App extends Component {
   render() {
     return (
-      <header>
+      <>
         <Nav />
-      </header>
+        <Banner />
+      </>
     );
   }
 }
