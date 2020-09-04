@@ -1,3 +1,5 @@
+@import "../partials.scss";
+
 .banner {
   position: relative;
   width: 100%;
@@ -87,7 +89,7 @@
         }
 
         &:focus {
-          box-shadow: 1px 1px 3px 3px #6455e8, -1px -1px 3px 3px #6455e8;
+          box-shadow: 1px 1px 3px 3px $secondary-color, -1px -1px 3px 3px $secondary-color;
         }
       }
 
@@ -99,12 +101,12 @@
         font-size: 0.95rem;
         border: none; 
         border-radius: 1.5rem 1.5rem 1.5rem 0;
-        background: #ef3a86;
+        background: $tertiary-color;
         color: #fff;
         transition: background 0s ease;
         
         &:hover {
-          background: #6455e8;
+          background: $secondary-color;
           transition: background 0.5s ease;
         }
       }
@@ -131,7 +133,6 @@
     }
     
     @media screen and (min-width: 992px) {
-      // bottom: -11%;
       right: 4%;
     }
 

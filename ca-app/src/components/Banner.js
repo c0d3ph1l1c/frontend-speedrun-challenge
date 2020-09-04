@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import '../static/css/util.scss';
 import '../static/css/components/banner.scss';
 import BannerImg from '../static/images/welcome-img.png';
 
