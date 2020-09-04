@@ -9,17 +9,17 @@ class About extends Component {
         <h3>Why Is It Special</h3>
         <div className="container-fluid">
           <div className="row justify-content-between">
-            <div className="col-md-3">
+            <div className="about-item">
               <div className="ti-mobile"></div>
               <h4>Easy to use</h4>
               <p>We build pretty complex tools and this allows us to take designs and turn them into functional quickly and easily</p>
             </div>
-            <div className="col-md-3">
+            <div className="about-item">
               <div className="ti-ruler-pencil"></div>
               <h4>Powerful Design</h4>
               <p>We build pretty complex tools and this allows us to take designs and turn them into functional quickly and easily</p>
             </div>
-            <div className="col-md-3">
+            <div className="about-item">
               <div className="ti-settings"></div>
               <h4>Cutomizability</h4>
               <p>We build pretty complex tools and this allows us to take designs and turn them into functional quickly and easily</p>

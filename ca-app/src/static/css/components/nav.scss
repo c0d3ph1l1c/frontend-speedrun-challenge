@@ -10,14 +10,14 @@
 
   &.navbar-absolute {
     position: absolute;
-    z-index: 4;
+    z-index: 2;
   }
 
   &.navbar-fixed {
     position: fixed;
     transform: translateY(-100%);
     animation: slide-in 0.5s ease 0.5s forwards;
-    z-index: 4;
+    z-index: 2;
     
     @media screen and (max-width: 991px) {
       .heading-bar {
@@ -124,15 +124,15 @@
   .navbar-collapse {
     box-sizing: border-box;
     font-weight: bold;
-    background-color: $primary-color;
+    background-color: $secondary-color;
     transition: height 0.3s ease-out;
     overflow: hidden;
 
-    &.expanding, &.expanded, &.collapsing {
+    &.expandBegun, &.expanding, &.expanded, &.beginCollapse, &.collapsing {
       visibility: visible;
     }
 
-    &.collapsed {
+    &.collapsed, &.beginExpand {
       visibility: hidden;
     }
     
@@ -220,7 +220,7 @@
         }
 
         &:hover {
-          background-color: $tertiary-color;     
+          background-color: $candy-apple-red;     
         }
       }
     }

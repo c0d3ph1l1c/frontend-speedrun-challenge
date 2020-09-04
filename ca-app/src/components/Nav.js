@@ -6,13 +6,13 @@ class Nav extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      navHeight: 'auto',
+      navHeight: '0px',
       navClass: 'collapsed',
       navbarClass: 'navbar-absolute'
     };
     this.fullNavHeight = 0;
     this.toggleNavDone = true;
-    this.navTransitionBegin = false;
+    this.navTransitionOngoing = false;
     this.navRef = React.createRef();
     this.navbrandRef = React.createRef();
   }
@@ -20,16 +20,15 @@ class Nav extends Component {
   toggleNav = () => {
     if(this.toggleNavDone) {
       const { navClass } = this.state;
-      this.fullNavHeight = this.navRef.current.offsetHeight;
 
       const newState = navClass === 'collapsed' ? 
         ({
-          navHeight: '0px',
-          navClass: 'expanding'
+          navHeight: 'auto',
+          navClass: 'beginExpand'
         }):
         ({
           navHeight: this.navRef.current.offsetHeight + 'px',
-          navClass: 'collapsing'
+          navClass: 'beginCollapse'
         });
       this.toggleNavDone = false;
       this.setState(newState);
@@ -39,13 +38,13 @@ class Nav extends Component {
   resetLock = () => {
     setTimeout(() => {
       this.toggleNavDone = true;
-      this.navTransitionBegin = false;
+      this.navTransitionOngoing = false;
     }, 50);
   }
 
   scrollHandler = throttle(() => {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-
+    
     const { navbarClass } = this.state;
     const { offsetTop, offsetHeight } = this.navbrandRef.current;
     const thresholdScroll = offsetTop + offsetHeight;
@@ -57,7 +56,7 @@ class Nav extends Component {
               navbarClass === 'navbar-fixed') {
       this.setState({ navbarClass: 'navbar-absolute'});
     }
-  }, true, 50);
+  }, true, 30);
 
   componentDidMount() {
     window.addEventListener('scroll', this.scrollHandler);
@@ -66,34 +65,49 @@ class Nav extends Component {
   componentDidUpdate() {
     if (!this.navTransitionBegin) {
       switch(this.state.navClass) {
-        case 'expanding': 
+        case 'beginExpand':
+          this.fullNavHeight = this.navRef.current.offsetHeight;
           setTimeout(() => {
-            this.setState({ 
-              navHeight: `${this.fullNavHeight}px`
+            this.setState({
+              navHeight: '0px',
+              navClass: 'expandBegun'
             });
           }, 0);
+          break;
+        case 'expandBegun': 
+          setTimeout(() => {
+            this.setState({
+              navHeight: `${this.fullNavHeight}px`,
+              navClass: 'expanding'
+            });
+          }, 0);
+          break;
+        case 'expanding': 
           setTimeout(() => {
             this.setState({ 
               navHeight: 'auto', 
               navClass: 'expanded' 
             }, this.resetLock);
           }, 300);
-          this.navTransitionBegin = true;
+          this.navTransitionOngoing = true;
           break;
         
+        case 'beginCollapse':
+          setTimeout(() => {
+            this.setState({
+              navHeight: '0px',
+              navClass: 'collapsing' 
+            });
+          }, 0);
+          break;
         case 'collapsing':
           setTimeout(() => {
             this.setState({ 
-              navHeight: '0px' 
-            });
-          }, 0);
-          setTimeout(() => {
-            this.setState({ 
-              navHeight: 'auto', 
+              navHeight: '0px', 
               navClass: 'collapsed' 
             }, this.resetLock);
           }, 300);
-          this.navTransitionBegin = true;
+          this.navTransitionOngoing = true;
           break;  
           
         default:
