@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../static/css/components/about.scss';
-import '../static/css/vendor/themify-icons/themify-icons.css';
 
 class About extends Component {
   render() {
