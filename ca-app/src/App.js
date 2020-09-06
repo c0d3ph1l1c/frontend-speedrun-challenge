@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Nav from './components/Nav';
 import Banner from './components/Banner';
 import About from './components/About';
+import Features from './components/Features';
 import Propositions from './components/Propositions';
 
 class App extends Component {
@@ -12,6 +13,7 @@ class App extends Component {
         <Banner />
         <About />
         <Propositions />
+        <Features />
       </>
     );
   }
