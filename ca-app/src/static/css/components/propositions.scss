@@ -58,6 +58,15 @@
         border-radius: 2rem 2rem 2rem 0;
         background-color: #fff;     
         box-shadow: 3px 6px 25px 0 rgba(0, 0, 0, 0.15);
+        color: rgba(0,0,0,0.7);
+        cursor: pointer;
+        transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+
+        &:hover {
+          background-color: $candy-apple-red;
+          color: #fff;
+          box-shadow: 3px 6px 25px 0 rgba(0, 0, 0, 0.1);
+        }
 
         @media screen and (min-width: 768px) {
           width: auto;
@@ -76,7 +85,7 @@
 
           i {
             font-size: 1.5rem;
-            color: rgba(0,0,0,0.7);
+            color: inherit;
           }
 
           .platform {
@@ -85,7 +94,7 @@
             margin-left: 0.5rem;
             line-height: 0.9rem;
             text-align: left;
-            color: rgba(0,0,0,0.5);
+            color: inherit;
 
             .store {
               font-size: 1rem;

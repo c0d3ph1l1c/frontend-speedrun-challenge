@@ -13,7 +13,7 @@ class Banner extends Component {
                 <h2>Colorlib app</h2>
                 <p>Everything You Need. To Start Selling Online Beautifully</p>
               </div>
-              <form className="row" action="#" method="POST">
+              <form action="#" method="POST">
                 <input type="text" placeholder="name@company.com"/>
                 <input type="submit" value="Get Started" />
               </form>

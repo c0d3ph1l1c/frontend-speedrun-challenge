@@ -57,8 +57,9 @@
 
     form {
       position: relative;
+      display: flex;
       margin-top: 3.5rem;
-      padding-left: 2rem;
+      padding-left: 1rem;
 
       @media screen and (max-width: 575px) {
         flex-direction: column;
