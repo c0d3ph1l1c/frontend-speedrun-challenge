@@ -10,6 +10,14 @@ class Modal extends Component {
     this.modal = document.getElementById('modal');
   }
 
+  componentDidMount() {
+    window.addEventListener('resize', () => {
+      if (this.props.show) {
+        this.modal.style.height = `${document.body.offsetHeight}px`;
+      }
+    });
+  }
+
   componentDidUpdate() {
     if(this.props.show) {
       this.modal.style.height = `${document.body.offsetHeight}px`;

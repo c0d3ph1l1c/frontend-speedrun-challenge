@@ -7,21 +7,44 @@ class Features extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showVideo: false
+      showVideo: false,
     };
+    this.videoTop = 0;
     this.videoWrapperRef = React.createRef();
   }
 
   toggleVideo = e => {
     e.preventDefault();
     this.setState(prevState => ({
-      showVideo: !prevState.showVideo
-    }), () => {
-      if(this.state.showVideo) {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-        this.videoWrapperRef.current.style.top = `${scrollTop}px`;
+      showVideo: !prevState.showVideo,
+    }));
+    this.videoTop = 0;
+    this.scrollTop = 0;
+  }
+
+  adjustVideoTop = () => {
+      const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      const videoHeight = this.videoWrapperRef.current.offsetHeight;
+      let offset = (clientHeight - videoHeight) / 2;
+      offset = Math.max(0, offset);
+      this.videoWrapperRef.current.style.top = `${this.scrollTop + offset}px`;
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', () => {
+      const { showVideo } = this.state;
+      if (showVideo) {
+        this.adjustVideoTop();
       }
     });
+  }
+
+  componentDidUpdate() {
+    const { showVideo, videoTop } = this.state;
+    if (showVideo && !videoTop) {
+      this.scrollTop = window.pageYOffset || document.documentElement.clientHeight || document.body.clientHeight;
+      this.adjustVideoTop();
+    }
   }
 
   render() {
@@ -83,11 +106,18 @@ class Features extends Component {
             />
             <Modal show={this.state.showVideo}>
               <div className="modal-child" onClick={this.toggleVideo}>
-                <div ref={this.videoWrapperRef} className="video-wrapper">
+                <div 
+                  className="video-wrapper" 
+                  ref={this.videoWrapperRef}
+                >
                   <div className="close">
-                    <i class="ti-close"></i>
+                    <i className="ti-close"></i>
                   </div>
-                  <iframe src="https://www.youtube.com/embed/f5BBJ4ySgpo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                  <iframe 
+                    src="https://www.youtube.com/embed/f5BBJ4ySgpo" 
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen={true}
+                  >
                   </iframe>
                 </div>
               </div>
