@@ -14,7 +14,7 @@ class Nav extends Component {
     this.toggleNavDone = true;
     this.navTransitionOngoing = false;
     this.navRef = React.createRef();
-    this.navbrandRef = React.createRef();
+    this.navBrandRef = React.createRef();
   }
 
   toggleNav = () => {
@@ -46,7 +46,7 @@ class Nav extends Component {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
     
     const { navbarClass } = this.state;
-    const { offsetTop, offsetHeight } = this.navbrandRef.current;
+    const { offsetTop, offsetHeight } = this.navBrandRef.current;
     const thresholdScroll = offsetTop + offsetHeight;
 
     if(scrollY > thresholdScroll &&
@@ -63,7 +63,7 @@ class Nav extends Component {
   }
 
   componentDidUpdate() {
-    if (!this.navTransitionBegin) {
+    if (!this.navTransitionOngoing) {
       switch(this.state.navClass) {
         case 'beginExpand':
           this.fullNavHeight = this.navRef.current.offsetHeight;
@@ -72,7 +72,7 @@ class Nav extends Component {
               navHeight: '0px',
               navClass: 'expandBegun'
             });
-          }, 0);
+          }, 10);
           break;
         case 'expandBegun': 
           setTimeout(() => {
@@ -80,7 +80,7 @@ class Nav extends Component {
               navHeight: `${this.fullNavHeight}px`,
               navClass: 'expanding'
             });
-          }, 0);
+          }, 10);
           break;
         case 'expanding': 
           setTimeout(() => {
@@ -134,7 +134,7 @@ class Nav extends Component {
                 <div className="col-11 col-96p ml-auto mr-auto">
                   <div className="row h-100 mt-auto mb-auto">
                     <h1 className="navbar-brand mr-auto">
-                      <a ref={this.navbrandRef} href="#">Ca.</a>
+                      <a ref={this.navBrandRef} href="#">Ca.</a>
                     </h1>
                     <button 
                       className="navbar-toggle d-block d-lg-none" 

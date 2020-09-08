@@ -18,39 +18,31 @@ class Features extends Component {
     this.setState(prevState => ({
       showVideo: !prevState.showVideo,
     }));
-    this.videoTop = 0;
-    this.scrollTop = 0;
   }
 
   adjustVideoTop = () => {
+    if (this.state.showVideo) {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
       const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
       const videoHeight = this.videoWrapperRef.current.offsetHeight;
       let offset = (clientHeight - videoHeight) / 2;
       offset = Math.max(0, offset);
-      this.videoWrapperRef.current.style.top = `${this.scrollTop + offset}px`;
+      this.videoWrapperRef.current.style.top = `${scrollTop + offset}px`;
+    }
   }
 
   componentDidMount() {
-    window.addEventListener('resize', () => {
-      const { showVideo } = this.state;
-      if (showVideo) {
-        this.adjustVideoTop();
-      }
-    });
+    window.addEventListener('resize', this.adjustVideoTop);
   }
 
   componentDidUpdate() {
-    const { showVideo, videoTop } = this.state;
-    if (showVideo && !videoTop) {
-      this.scrollTop = window.pageYOffset || document.documentElement.clientHeight || document.body.clientHeight;
-      this.adjustVideoTop();
-    }
+    this.adjustVideoTop();
   }
 
   render() {
     return (
-      <>
-        <div className="features container">
+      <div className="features">
+        <div className="container">
           <h3>Awesome Features</h3>
           <div className="container-fluid">
             <div className="row">
@@ -103,7 +95,7 @@ class Features extends Component {
             <a 
               onClick={this.toggleVideo} 
               href="https://www.youtube.com/watch?v=f5BBJ4ySgpo"
-            />
+            > </a>
             <Modal show={this.state.showVideo}>
               <div className="modal-child" onClick={this.toggleVideo}>
                 <div 
@@ -117,14 +109,53 @@ class Features extends Component {
                     src="https://www.youtube.com/embed/f5BBJ4ySgpo" 
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
                     allowFullScreen={true}
+                    title="Video"
                   >
                   </iframe>
                 </div>
               </div>
             </Modal>
-          </div>    
+          </div>
         </div>
-      </>
+        <div className="stats">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-3 stat">
+                <div className="figure" max="90">90</div>
+                <div className="description">
+                  <i className="ion-arrow-down-a"></i>
+                  <p>APP</p>
+                  <p>DOWNLOADS</p>
+                </div>
+              </div>
+              <div className="col-md-3 stat">
+                <div className="figure" max="120">120</div>
+                <div className="description">
+                  <i className="ion-happy-outline"></i>
+                  <p>HAPPY</p>
+                  <p>CLIENTS</p>  
+                </div>
+              </div>
+              <div className="col-md-3 stat">
+                <div className="figure" max="40">40</div>
+                <div className="description">
+                  <i className="ion-person"></i>
+                  <p>ACTIVE</p>
+                  <p>ACCOUNTS</p> 
+                </div>
+              </div>
+              <div className="col-md-3 stat">
+                <div className="figure" max="10">10</div>
+                <div className="description">
+                  <i className="ion-ios-star-outline"></i>
+                  <p>TOTAL</p>
+                  <p>APP RATES</p>                
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 }

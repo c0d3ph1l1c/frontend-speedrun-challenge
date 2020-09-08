@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import ReactDOM from 'react-dom';
 import '../static/css/components/modal.scss';
 
@@ -12,7 +12,7 @@ class Modal extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', () => {
-      if (this.props.show) {
+      if(this.props.show) {
         this.modal.style.height = `${document.body.offsetHeight}px`;
       }
     });
