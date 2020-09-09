@@ -4,45 +4,90 @@ import '../../static/css/components/shared/carousel.scss';
 class Carousel extends Component {
   constructor(props) {
     super(props);
-    
-    const { items, visibleCount, startIndex } = this.props;
+    let { startIndex } = this.props;
 
-    if(visibleCount % 2 === 0) {
+    this.carouselRef = React.createRef();
+    this.itemMargin = this.props.margin ? this.props.margin : 30;
+    this.items = this.computeItemArr(this.props);
+    this.state = {
+      itemWidth: 'auto',
+      activeIndex: this.items.findIndex(item => item.index === startIndex && !item.clone),
+      innerTranslate: 0
+    };
+  }
+
+  computeItemArr = props => {
+    let { items, visibleCount, startIndex } = props;
+
+    if (visibleCount % 2 === 0) {
       throw new Error(`Carousel Error: visibleCount must not odd number`);
     }
-    if(visibleCount > items.length) {
+    if (visibleCount > items.length) {
       throw new Error(`Carousel Error: visibleCount must not be larger than items.length`);
     }
-    if(startIndex < 0 || startIndex >= items.length) {
+    if (startIndex < 0 || startIndex >= items.length) {
       throw new Error(`Carousel Error: startIndex must be between 0 and items.length (inclusive)`);
     }
 
-    this.items = [...items];
-    const visibleLeftEndIdx = startIndex - parseInt(visibleCount/2);
-    if(visibleLeftEndIdx < 0) {
-      this.items.unshift(...this.items.splice(visibleLeftEndIdx));
+    items = [...items];
+    const visibleLeftEndIdx = startIndex - parseInt(visibleCount / 2);
+    if (visibleLeftEndIdx < 0) {
+      items.unshift(...items.splice(visibleLeftEndIdx));
     } else {
-      this.items.push(...this.items.splice(0, visibleLeftEndIdx));
+      items.push(...items.splice(0, visibleLeftEndIdx));
     }
 
-    const leftClone = this.items.slice(-visibleCount).map(item => ({ clone: 'true', ...item }));
-    const rightClone = this.items.slice(0, visibleCount).map(item => ({ clone: 'true', ...item }));
-    this.items = [...leftClone, ...this.items, ...rightClone];
-    console.log(this.items);
+    const leftClone = items.slice(-visibleCount).map(item => ({ clone: 'true', ...item }));
+    const rightClone = items.slice(0, visibleCount).map(item => ({ clone: 'true', ...item }));
+    return [...leftClone, ...items, ...rightClone];
+  }
+
+  componentDidMount() {
+    const { visibleCount, activeEnlargeFactor = 1 } = this.props;
+    const { activeIndex } = this.state;
+
+    const carouselWidth = parseInt(getComputedStyle(this.carouselRef.current, null)['width']);
+    const itemWidth = parseInt((carouselWidth - visibleCount * this.itemMargin * 2) / (visibleCount + activeEnlargeFactor - 1));
+    const innerTranslate = (activeIndex - parseInt(visibleCount / 2)) * (itemWidth + this.itemMargin * 2);
+    this.setState({
+      itemWidth,
+      innerTranslate
+    });
   }
 
   render() {
-    const { startIndex } = this.props;
+    const { itemWidth, activeIndex, innerTranslate, carouselPadding } = this.state;
 
     return (
-      <div className="carousel">
-        <ul className="carousel-inner">
+      <div 
+        className="carousel" 
+        ref={this.carouselRef}
+      >
+        <ul 
+          className="carousel-inner"
+          style={{
+            transform: `translateX(-${innerTranslate}px)`
+          }}
+        >
           { this.items.map((item, index) => (
             <li 
-              className={`carousel-item${item.clone? ' clone' : ''}${item.index === startIndex && !item.clone? ' active' : ''}`}   
+              className={`carousel-item${item.clone? ' clone' : ''}${index === activeIndex? ' active' : ''}`}   
               key={index}
+              style={{
+                margin: `0 ${this.itemMargin}px`
+              }}
             >
-              <img src={item.imgUrl} alt={item.imgAlt} />
+              <img 
+                src={item.imgUrl} 
+                style={{ 
+                  width: itemWidth === 'auto'
+                          ? itemWidth 
+                          : index === activeIndex 
+                          ? `${1.2 * itemWidth}px` 
+                          : `${itemWidth}px`
+                }}
+                alt={item.imgAlt} 
+              />
             </li>
           ))}
         </ul>

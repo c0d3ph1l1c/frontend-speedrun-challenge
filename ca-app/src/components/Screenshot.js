@@ -19,12 +19,13 @@ const appArr = [
 class Screenshot extends Component {
   render() {
     return (
-      <div className="screenshot container">
+      <div className="screenshot">
         <h3>App Screenshots</h3>
         <Carousel 
           items={appArr} 
           visibleCount={5} 
           startIndex={0}
+          activeEnlargeFactor={1.2}
         />
       </div>
     );

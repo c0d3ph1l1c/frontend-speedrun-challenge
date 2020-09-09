@@ -1,6 +1,8 @@
 @import "../partials.scss";
 
 .screenshot {
+  width: 85%;
+  margin: 0 auto;
   color: darken($primary-color, 10%);
 
 
@@ -31,8 +33,9 @@
   .carousel {
     .carousel-inner {
       .carousel-item {
-        img {
-          width: 8rem;
+        opacity: 0.7;
+        &.active {
+          opacity: 1;
         }
       }
     }
