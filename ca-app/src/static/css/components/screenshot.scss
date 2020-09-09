@@ -27,4 +27,14 @@
       background-color: $candy-apple-red;
     }
   }
+
+  .carousel {
+    .carousel-inner {
+      .carousel-item {
+        img {
+          width: 8rem;
+        }
+      }
+    }
+  }
 }

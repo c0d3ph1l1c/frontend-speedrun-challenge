@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import ReactDOM from 'react-dom';
-import '../static/css/components/modal.scss';
+import '../../static/css/components/shared/modal.scss';
 
 class Modal extends Component {
   constructor(props) {

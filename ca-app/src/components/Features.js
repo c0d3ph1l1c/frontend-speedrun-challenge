@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Modal from './Modal';
+import Modal from './shared/Modal';
 import '../static/css/components/features.scss';
 import VideoImg from '../static/images/video.jpg';
 
