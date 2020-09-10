@@ -7,12 +7,22 @@ class Carousel extends Component {
     let { startIndex } = this.props;
 
     this.carouselRef = React.createRef();
-    this.itemMargin = this.props.margin ? this.props.margin : 30;
-    this.items = this.computeItemArr(this.props);
+
+    // Set default values if not specified
+    this.activeEnlargeFactor = this.props.activeEnlargeFactor? this.props.activeEnlargeFactor : 1;
+    this.itemMargin = this.props.margin? this.props.margin : 30;
+    this.interval = this.props.interval? this.props.interval : 3000;
+    this.transitionDuration = this.props.transitionDuration? this.props.transitionDuration : 500;
+    this.forAdjacentTransition = this.props.forAdjacentTransition !== 'undefined'
+                                  ? this.props.forAdjacentTransition 
+                                  : false;
+
+    this.itemsArr = this.computeItemArr(this.props);
     this.state = {
       itemWidth: 'auto',
-      activeIndex: this.items.findIndex(item => item.index === startIndex && !item.clone),
-      innerTranslate: 0
+      activeIndex: this.itemsArr.findIndex(item => item.index === startIndex && !item.clone),
+      innerTranslate: 0,
+      transition: `transform ${this.transitionDuration}ms ease`
     };
   }
 
@@ -42,57 +52,167 @@ class Carousel extends Component {
     return [...leftClone, ...items, ...rightClone];
   }
 
+  computeTranslate = index => {
+    const { visibleCount } = this.props;
+    return (index - parseInt(visibleCount / 2)) * (this.itemWidth + this.itemMargin * 2);
+  }
+
+  setCarouselTimer = () => {
+    return setInterval(() => {
+      const { activeIndex } = this.state;
+      const newActiveIndex = activeIndex + 1;
+
+      this.setState(prevState => ({
+        activeIndex: newActiveIndex,
+        innerTranslate: this.computeTranslate(newActiveIndex)
+      }));
+    }, this.interval);
+  }
+
+  handleIndicatorClick = e => {
+    clearInterval(this.timer);
+    this.timer = null;
+    const { itemsArr, forAdjacentTransition } = this;
+    const { items } = this.props;
+    const { activeIndex } = this.state;
+    const actualCurrIndex = itemsArr[activeIndex].index;
+    const indicatorIndex = parseInt(e.target.dataset.index);
+    const offset = indicatorIndex - actualCurrIndex;
+    let newActiveIndex = 0;
+    if(Math.abs(offset) < Math.abs(offset + (offset >= 0? -items.length : items.length))) {
+      newActiveIndex = activeIndex + offset;
+    } else {
+      newActiveIndex = activeIndex + offset + (offset >= 0? -items.length : items.length);
+    }
+    if(forAdjacentTransition) {
+      this.setState(prevState => ({
+        activeIndex: newActiveIndex,
+        innerTranslate: this.computeTranslate(newActiveIndex),
+        transition: `transform ${this.transitionDuration * Math.abs(newActiveIndex - activeIndex)}ms ease`
+      }));
+    } else {
+      this.setState(prevState => ({
+        activeIndex: newActiveIndex,
+        innerTranslate: this.computeTranslate(newActiveIndex)
+      }));
+    }
+  }
+
   componentDidMount() {
-    const { visibleCount, activeEnlargeFactor = 1 } = this.props;
+    const { activeEnlargeFactor } = this;
+    const { visibleCount } = this.props;
     const { activeIndex } = this.state;
 
+    // calculate & set item width
     const carouselWidth = parseInt(getComputedStyle(this.carouselRef.current, null)['width']);
-    const itemWidth = parseInt((carouselWidth - visibleCount * this.itemMargin * 2) / (visibleCount + activeEnlargeFactor - 1));
-    const innerTranslate = (activeIndex - parseInt(visibleCount / 2)) * (itemWidth + this.itemMargin * 2);
+    this.itemWidth = parseInt((carouselWidth - visibleCount * this.itemMargin * 2) / (visibleCount + activeEnlargeFactor - 1));
+    const innerTranslate = this.computeTranslate(activeIndex);
     this.setState({
-      itemWidth,
+      itemWidth: this.itemWidth,
       innerTranslate
     });
+
+    // initiate carousel movement timer
+    this.timer = this.setCarouselTimer();
+  }
+
+  componentDidUpdate() {   
+    const { transitionDuration } = this;
+    const { items, visibleCount } = this.props;
+    const { activeIndex, transition } = this.state;
+
+    let newActiveIndex = 0,
+        isBeyondVisibleRange = false;
+        
+    if(this.activeIndex < visibleCount) {
+      // set index to visible counterpart
+      newActiveIndex = activeIndex + 6;
+      isBeyondVisibleRange = true;
+    } else if (activeIndex >= visibleCount + items.length) {
+      // set index to visible counterpart
+      newActiveIndex = activeIndex - 6;
+      isBeyondVisibleRange = true;
+    } else {
+      // restore transition style
+      if(transition !== `transform ${transitionDuration}ms ease`) {
+        setTimeout(() => {
+            this.setState({
+            transition: `transform ${transitionDuration}ms ease`
+          });
+        }, 20);
+        if(!this.timer) {
+          this.timer = this.setCarouselTimer();
+        }
+        return;
+      }
+    }
+    
+    // if beyond visible range, translate to visible counterpart without transition
+    isBeyondVisibleRange && setTimeout(() => {
+      this.setState({
+        activeIndex: newActiveIndex,
+        innerTranslate: this.computeTranslate(newActiveIndex),
+        transition: 'none'
+      });
+    }, transitionDuration); 
+  }
+
+  componentWillUnmount() {
+    // clear carousel movement timer
+    clearInterval(this.timer);
   }
 
   render() {
-    const { itemWidth, activeIndex, innerTranslate, carouselPadding } = this.state;
+    const { carouselRef, activeEnlargeFactor, itemMargin, itemsArr } = this;
+    const { items } = this.props;
+    const { itemWidth, activeIndex, innerTranslate, transition } = this.state;
 
     return (
       <div 
         className="carousel" 
-        ref={this.carouselRef}
+        ref={carouselRef}
       >
         <ul 
           className="carousel-inner"
           style={{
-            transform: `translateX(-${innerTranslate}px)`
+            transform: `translateX(-${innerTranslate}px)`,
+            transition
           }}
         >
-          { this.items.map((item, index) => (
-            <li 
-              className={`carousel-item${item.clone? ' clone' : ''}${index === activeIndex? ' active' : ''}`}   
-              key={index}
-              style={{
-                margin: `0 ${this.itemMargin}px`
-              }}
-            >
-              <img 
-                src={item.imgUrl} 
-                style={{ 
-                  width: itemWidth === 'auto'
-                          ? itemWidth 
-                          : index === activeIndex 
-                          ? `${1.2 * itemWidth}px` 
-                          : `${itemWidth}px`
-                }}
-                alt={item.imgAlt} 
-              />
-            </li>
-          ))}
+          { 
+            itemsArr.map((item, index) => (
+              <li 
+                className={`carousel-item${item.clone? ' clone' : ''}${index === activeIndex? ' active' : ''}`}   
+                key={index}
+                style={{ margin: `0 ${itemMargin}px` }}
+              >
+                <img 
+                  src={item.imgUrl} 
+                  style={{ 
+                    width: itemWidth === 'auto'
+                            ? itemWidth 
+                            : index === activeIndex 
+                            ? `${activeEnlargeFactor * itemWidth}px` 
+                            : `${itemWidth}px`
+                  }}
+                  alt={item.imgAlt} 
+                />
+              </li>
+            ))
+          }
         </ul>
         <ul className="carousel-indicators">
-          
+          { 
+            items.map((item, index) => (
+              <li 
+                className={ `carousel-indicator${index === itemsArr[activeIndex].index? ' active' : ''}` }
+                key={ index }
+                onClick={ this.handleIndicatorClick }
+                data-index={ index }
+              >
+              </li>
+            ))
+          }
         </ul>
       </div>
     );
