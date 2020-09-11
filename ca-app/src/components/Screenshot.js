@@ -22,11 +22,12 @@ class Screenshot extends Component {
       <div className="screenshot">
         <h3>App Screenshots</h3>
         <Carousel 
-          items={appArr} 
-          visibleCount={5} 
-          startIndex={0}
-          activeEnlargeFactor={1.2}
-          interval={5000}
+          items={ appArr } 
+          visibleCount={ 5 } 
+          startIndex={ 0 }
+          activeEnlargeFactor={ 1.2 }
+          interval={ 1000 }
+          transitionDuration={ 900 }
           forAdjacentTransition={ true }
         />
       </div>
