@@ -22,13 +22,13 @@ class Screenshot extends Component {
       <div className="screenshot">
         <h3>App Screenshots</h3>
         <Carousel 
-          items={ appArr } 
-          visibleCount={ 5 } 
-          startIndex={ 0 }
+          slides={ appArr } 
+          slidesPerView={ 5 } 
+          startActiveIndex={ 0 }
           activeEnlargeFactor={ 1.2 }
-          interval={ 1000 }
-          transitionDuration={ 900 }
-          forAdjacentTransition={ true }
+          interval={ 5000 }
+          transitionDuration={ 1000 }
+          singleSlideTransition={ true }
         />
       </div>
     );
