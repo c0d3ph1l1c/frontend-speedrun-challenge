@@ -29,6 +29,13 @@ class Screenshot extends Component {
           interval={ 5000 }
           transitionDuration={ 1000 }
           singleSlideTransition={ true }
+          pickAdjacentAfterDrag={ true }
+          navigation={{
+            prev: true,
+            next: true,
+            prevClass: 'ti-angle-left',
+            nextClass: 'ti-angle-right'
+          }}
         />
       </div>
     );
