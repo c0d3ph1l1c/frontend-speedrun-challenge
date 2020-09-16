@@ -17,25 +17,44 @@ const appArr = [
 ];
 
 class Screenshot extends Component {
+  constructor(props) {
+    super(props);
+    let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+    let slidePerView = clientWidth >= 992 ? 5 : clientWidth >= 480 ? 3 : 1;
+
+    this.state = {
+      slidePerView
+    };
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', () => {
+      let clientWidth =
+        document.documentElement.clientWidth || document.body.clientWidth;
+        let slidePerView = clientWidth >= 992 ? 5 : (clientWidth >= 480 ? 3 : 1);
+        console.log(clientWidth);
+
+      this.setState({
+        slidePerView
+      });
+    });
+  }
+
   render() {
+    const { slidePerView } = this.state;
+
     return (
       <div className="screenshot">
         <h3>App Screenshots</h3>
         <Carousel 
           slides={ appArr } 
-          slidesPerView={ 5 } 
+          slidesPerView={ slidePerView } 
           startActiveIndex={ 0 }
           activeEnlargeFactor={ 1.2 }
           interval={ 5000 }
           transitionDuration={ 1000 }
           singleSlideTransition={ true }
           pickAdjacentAfterDrag={ true }
-          navigation={{
-            prev: true,
-            next: true,
-            prevClass: 'ti-angle-left',
-            nextClass: 'ti-angle-right'
-          }}
         />
       </div>
     );

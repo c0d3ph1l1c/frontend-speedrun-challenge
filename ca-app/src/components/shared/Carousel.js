@@ -58,6 +58,33 @@ class Carousel extends Component {
     return offset + (offset >= 0? -slides.length : slides.length);
   }
 
+  setSlideWidth = () => {
+    const { computeTranslate, slidesArr } = this;
+    const { activeEnlargeFactor, spaceBetween, slidesPerView } = this.props;
+    const { activeIndex } = this.state;
+
+    console.log(slidesPerView);
+
+    // calculate & set slide width
+    const carouselWidth = parseInt(
+      getComputedStyle(this.carouselRef.current, null)["width"]
+    );
+    const slideWidth = parseInt(
+      (carouselWidth - slidesPerView * spaceBetween * 2) /
+        (slidesPerView + activeEnlargeFactor - 1)
+    );
+    const innerWidth =
+      (slidesArr.length - 1) * (slideWidth + 2 * spaceBetween) +
+      parseInt(slideWidth * activeEnlargeFactor) +
+      2 * spaceBetween;
+    const innerTranslate = computeTranslate(activeIndex, slideWidth);
+    this.setState({
+      innerWidth,
+      slideWidth,
+      innerTranslate,
+    });
+  }
+
   go = offset => {
     const { computeTranslate } = this;
     const { slides, slidesPerView, transitionDuration } = this.props;
@@ -83,12 +110,10 @@ class Carousel extends Component {
   }
 
   navigate = offset => {
-    const { go, setAutoplayTimer } = this;
-    const { transitionDuration } = this.props;
+    const { go } = this;
     const _this = this;
+    const { transitionDuration } = this.props;
     let locked = false;
-
-    console.log('initiate navigate');
 
     return function() {
       if(!locked) {
@@ -96,13 +121,15 @@ class Carousel extends Component {
         clearInterval(_this.autoplayTimer);
         _this.autoplayTimer = null;
         go(offset);
-        console.log(transitionDuration * Math.abs(offset))
         setTimeout(() => {
           locked = false;
         }, transitionDuration * Math.abs(offset));
       }
     }
   }
+
+  prevSlide = this.navigate(-1);
+  nextSlide = this.navigate(1);
 
   setAutoplayTimer = () => {
     const { go } = this;
@@ -228,23 +255,14 @@ class Carousel extends Component {
   }
 
   componentDidMount() {
-    const { computeTranslate, slidesArr } = this;
-    const { activeEnlargeFactor, spaceBetween, slidesPerView } = this.props;
-    const { activeIndex } = this.state;
+    const { setAutoplayTimer, setSlideWidth } = this;
 
-    // calculate & set slide width
-    const carouselWidth = parseInt(getComputedStyle(this.carouselRef.current, null)['width']);
-    const slideWidth = parseInt((carouselWidth - slidesPerView * spaceBetween * 2) / (slidesPerView + activeEnlargeFactor - 1));
-    const innerWidth = (slidesArr.length - 1) * (slideWidth + 2 * spaceBetween) + parseInt(slideWidth * activeEnlargeFactor) + 2 * spaceBetween;
-    const innerTranslate = computeTranslate(activeIndex, slideWidth);
-    this.setState({
-      innerWidth,
-      slideWidth,
-      innerTranslate
-    });
+    setSlideWidth();
+
+    window.addEventListener('resize', setSlideWidth);
 
     // initiate carousel movement timer
-    this.autoplayTimer = this.setAutoplayTimer();
+    this.autoplayTimer = setAutoplayTimer();
   }
 
   componentDidUpdate() {   
@@ -286,81 +304,82 @@ class Carousel extends Component {
   }
 
   render() {
-    const { carouselRef, navigate, slidesArr } = this;
+    const { carouselRef, nextSlide, prevSlide, slidesArr } = this;
     const { activeEnlargeFactor, slides, spaceBetween, navigation: { prev, next, prevClass, nextClass} } = this.props;
     const { innerWidth, slideWidth, activeIndex, innerTranslate, transition, cursor } = this.state;
 
-    console.log(prevClass, nextClass)
-
     return (
-      <div 
-        className="carousel" 
-        ref={carouselRef}
-      >
+      <div className="carousel" ref={ carouselRef }>
         <div className="carousel-upper-container">
-          { prev && 
-            <span 
-              className={`swiper-prev-btn${' ' + prevClass}`}
-              onClick={navigate(-1)}
-            >
-              { !prevClass && '<' }
-            </span>}
+          {
+            prev && (
+              <span
+                className={`swiper-prev-btn${' ' + prevClass}`}
+                onClick={ prevSlide }
+              >
+                { !prevClass && '<' }
+              </span>
+            )
+          }
           <div className="carousel-inner-wrapper">
-            <ul 
+            <ul
               className="carousel-inner"
               style={{
                 width: innerWidth,
                 transform: `translateX(-${innerTranslate}px)`,
                 transition,
-                cursor
+                cursor,
               }}
-              onMouseDown={ this.handleSlidesMouseDown }
-              onMouseMove={ this.handleSlidesMouseMove }
-              onMouseUp={ this.handleSlidesMouseUp }
+              onMouseDown={this.handleSlidesMouseDown}
+              onMouseMove={this.handleSlidesMouseMove}
+              onMouseUp={this.handleSlidesMouseUp}
             >
-              { 
-                slidesArr.map((slide, index) => (
-                  <li 
-                    className={`carousel-slide${slide.clone? ' clone' : ''}${index === activeIndex? ' active' : ''}`}   
-                    key={index}
-                    style={{ margin: `0 ${spaceBetween}px` }}
-                  >
-                    <img 
-                      src={slide.imgUrl} 
-                      style={{ 
-                        width: slideWidth === 'auto'
-                                ? slideWidth 
-                                : index === activeIndex 
-                                ? `${parseInt(activeEnlargeFactor * slideWidth)}px` 
-                                : `${slideWidth}px`
-                      }}
-                      alt={slide.imgAlt} 
-                    />
-                  </li>
-                ))
-              }
+              {slidesArr.map((slide, index) => (
+                <li
+                  className={`carousel-slide${slide.clone ? " clone" : ""}${
+                    index === activeIndex ? " active" : ""
+                  }`}
+                  key={index}
+                  style={{ margin: `0 ${spaceBetween}px` }}
+                >
+                  <img
+                    src={slide.imgUrl}
+                    style={{
+                      width:
+                        slideWidth === "auto"
+                          ? slideWidth
+                          : index === activeIndex
+                          ? `${parseInt(activeEnlargeFactor * slideWidth)}px`
+                          : `${slideWidth}px`,
+                    }}
+                    alt={slide.imgAlt}
+                  />
+                </li>
+              ))}
             </ul>
           </div>
-          { next && 
-            <span 
-              className={`swiper-next-btn${' ' +  nextClass}`}
-              onClick={navigate(1)}
-            >
-              { !nextClass && '>' }
-            </span>}
+          {
+            next && (
+              <span
+                className={`swiper-next-btn${' ' + nextClass}`}
+                onClick={ nextSlide }
+              >
+                {!nextClass && '>'}
+              </span>
+            )
+          }
         </div>
         <ul className="carousel-paginations">
-          { 
-            slides.map((slide, index) => (
-              <li 
-                className={ `carousel-pagination${index === slidesArr[activeIndex].index? ' active' : ''}` }
-                key={ index }
-                onClick={ this.handlePaginationClick }
-                data-index={ index }
-              >
-              </li>
-            ))
-          }
+          {slides.map((slide, index) => (
+            <li
+              className={`carousel-pagination${
+                index === slidesArr[activeIndex].index ? " active" : ""
+              }`}
+              key={index}
+              onClick={this.handlePaginationClick}
+              data-index={index}
+            ></li>
+          ))}
         </ul>
       </div>
     );

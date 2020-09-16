@@ -134,7 +134,7 @@ class Nav extends Component {
                 <div className="col-11 col-96p ml-auto mr-auto">
                   <div className="row h-100 mt-auto mb-auto">
                     <h1 className="navbar-brand mr-auto">
-                      <a ref={this.navBrandRef} href="#">Ca.</a>
+                      <a ref={this.navBrandRef} href="/">Ca.</a>
                     </h1>
                     <button 
                       className="navbar-toggle d-block d-lg-none" 
@@ -155,32 +155,32 @@ class Nav extends Component {
                 <div className="row">
                   <ul className="navbar-nav col-12 col-lg-9 ml-auto">
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Home</a>
+                      <a href="/" className="nav-link">Home</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">About</a>
+                      <a href="/about" className="nav-link">About</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Features</a>
+                      <a href="/features" className="nav-link">Features</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Screenshot</a>
+                      <a href="/screenshot" className="nav-link">Screenshot</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Pricing</a>
+                      <a href="/pricing" className="nav-link">Pricing</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Testimonials</a>
+                      <a href="/testimonials" className="nav-link">Testimonials</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Team</a>
+                      <a href="/team" className="nav-link">Team</a>
                     </li>
                     <li className="nav-item">
-                      <a href="#" className="nav-link">Contact</a>
+                      <a href="/contact" className="nav-link">Contact</a>
                     </li>
                   </ul>
                   <div className="btn-wrapper">
-                    <a className="btn-signup" href="#">Sign Up Free</a>
+                    <a className="btn-signup" href="/">Sign Up Free</a>
                   </div>
                 </div>
               </div>
