@@ -31,7 +31,7 @@ class Modal extends Component {
   }
 
   componentWillUnmount() {
-    this.modal.removeChild(this.el);
+    this.modal.children.length && this.modal.removeChild(this.el);
   }
 
   render() {

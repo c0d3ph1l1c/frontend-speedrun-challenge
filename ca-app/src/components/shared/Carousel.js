@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import '../../static/css/components/shared/carousel.scss';
+import { debounce } from '../../utils';
 
 class Carousel extends Component {
   constructor(props) {
     super(props);
-    let { startActiveIndex, transitionDuration } = this.props;
+    let { initialCenterSlideIndex, transitionDuration } = this.props;
 
     this.carouselRef = React.createRef();
 
+    this.centerSlideIndex = initialCenterSlideIndex;
     this.slidesArr = this.computeSlidesArr(this.props);
     this.state = {
       innerWidth: 'auto',
       slideWidth: 'auto',
-      activeIndex: this.slidesArr.findIndex(slide => slide.index === startActiveIndex && !slide.clone),
+      activeIndex: this.slidesArr.findIndex(slide => slide.index === initialCenterSlideIndex && !slide.clone),
       innerTranslate: 0,
       transition: `transform ${transitionDuration}ms ease`,
       cursor: 'auto'
@@ -20,7 +22,7 @@ class Carousel extends Component {
   }
 
   computeSlidesArr = props => {
-    let { interval, slides, slidesPerView, startActiveIndex, transitionDuration } = props;
+    let { interval, slides, slidesPerView, initialCenterSlideIndex, transitionDuration } = props;
 
     if(Math.abs(interval - transitionDuration) < 100) {
       throw new Error(`Carousel Error: interval and transitionDuration has to be at least 100ms apart`);
@@ -31,12 +33,12 @@ class Carousel extends Component {
     if (slidesPerView > slides.length) {
       throw new Error(`Carousel Error: slidesPerView must not be larger than slides.length`);
     }
-    if (startActiveIndex < 0 || startActiveIndex >= slides.length) {
-      throw new Error(`Carousel Error: startActiveIndex must be between 0 and slides.length (inclusive)`);
+    if (initialCenterSlideIndex < 0 || initialCenterSlideIndex >= slides.length) {
+      throw new Error(`Carousel Error: initialCenterSlideIndex must be between 0 and slides.length (inclusive)`);
     }
 
     slides = [...slides];
-    const visibleLeftEndIdx = startActiveIndex - parseInt(slidesPerView / 2);
+    const visibleLeftEndIdx = initialCenterSlideIndex - parseInt(slidesPerView / 2);
     if (visibleLeftEndIdx < 0) {
       slides.unshift(...slides.splice(visibleLeftEndIdx));
     } else {
@@ -59,11 +61,11 @@ class Carousel extends Component {
   }
 
   setSlideWidth = () => {
-    const { computeTranslate, slidesArr } = this;
+    const { computeTranslate, setAutoplayTimer, slidesArr } = this;
     const { activeEnlargeFactor, spaceBetween, slidesPerView } = this.props;
-    const { activeIndex } = this.state;
 
-    console.log(slidesPerView);
+    clearInterval(this.autoplayTimer);
+    this.autoplayTimer = null;
 
     // calculate & set slide width
     const carouselWidth = parseInt(
@@ -77,16 +79,21 @@ class Carousel extends Component {
       (slidesArr.length - 1) * (slideWidth + 2 * spaceBetween) +
       parseInt(slideWidth * activeEnlargeFactor) +
       2 * spaceBetween;
-    const innerTranslate = computeTranslate(activeIndex, slideWidth);
-    this.setState({
+    const newActiveIndex = slidesArr.findIndex(slide => slide.index === this.centerSlideIndex && !slide.clone);
+    const innerTranslate = computeTranslate(newActiveIndex, slideWidth);
+    this.setState(prevState => ({
       innerWidth,
       slideWidth,
+      activeIndex: newActiveIndex,
       innerTranslate,
+      transition: 'none'
+    }), () => {
+      !this.autoplayTimer && (this.autoplayTimer = setAutoplayTimer());
     });
   }
 
   go = offset => {
-    const { computeTranslate } = this;
+    const { computeTranslate, slidesArr } = this;
     const { slides, slidesPerView, transitionDuration } = this.props;
     const { activeIndex, slideWidth } = this.state;
 
@@ -101,6 +108,7 @@ class Carousel extends Component {
       isRollingBack = true;
     }
     this.slidesMoved = offset;
+    this.centerSlideIndex = slidesArr[newActiveIndex].index;
 
     this.setState(prevState => ({
       activeIndex: newActiveIndex,
@@ -165,6 +173,7 @@ class Carousel extends Component {
       this.slidesMoved = oppositeOffset;
     }
 
+    console.log('newActiveIndex: ', newActiveIndex);
     // abrupt rollback first if new slides lies beyond visible range
     let isRollingBack = false;
     if(newActiveIndex < slidesPerView) {
@@ -174,7 +183,11 @@ class Carousel extends Component {
       newActiveIndex = activeIndex - slides.length;
       isRollingBack = true;
     }
-
+    console.log('activeIndex: ', activeIndex);
+    console.log('slides.length: ', slides.length);
+    console.log('newActiveIndex: ', newActiveIndex);
+    console.log('slidesArr: ', slidesArr);
+    this.centerSlideIndex = slidesArr[newActiveIndex].index;
     this.setState(prevState => ({
       activeIndex: newActiveIndex,
       innerTranslate: computeTranslate(newActiveIndex, slideWidth),
@@ -186,21 +199,29 @@ class Carousel extends Component {
     }));
   }
 
-  handleSlidesMouseDown = e => {
+  handleSlidesDragStart = e => {
     clearInterval(this.autoplayTimer);
     this.autoplayTimer = null;
-    this.mouseDown = true;
-    this.lastMousePosX = e.clientX;
+    this.dragStarted = true;
+    if(e.type === 'mousedown') {
+      this.lastMousePosX = e.clientX;
+    } else {
+      this.lastMousePosX = e.changedTouches[0].pageX;
+    }
     this.setState({
       cursor: 'grab'
     });
   }
 
-  handleSlidesMouseMove = e => {
-    if(this.mouseDown) {
+  handleSlidesDragMove = e => {
+    if(this.dragStarted) {
       const { activeEnlargeFactor, slides, spaceBetween, slidesPerView } = this.props;
       let { activeIndex, innerTranslate, slideWidth } = this.state;
-      this.offsetX = this.lastMousePosX - e.clientX;
+      if(e.type === 'mousemove') {
+        this.offsetX = this.lastMousePosX - e.clientX;
+      } else {
+        this.offsetX = this.lastMousePosX - e.changedTouches[0].pageX;
+      }
 
       const visibleLimit = {
         left: activeIndex < slidesPerView
@@ -218,17 +239,21 @@ class Carousel extends Component {
         innerTranslate -= visibleLimit.right - visibleLimit.left;
       }
       
-      this.setState(prevState => ({
+      this.setState({
         innerTranslate,
         transition: 'none'
-      }));
-      this.lastMousePosX = e.clientX;
+      });
+      if(e.type === 'mousemove') {
+        this.lastMousePosX = e.clientX;
+      } else {
+        this.lastMousePosX = e.changedTouches[0].pageX;
+      }
     }
   }
 
-  handleSlidesMouseUp = () => {
-    if(this.mouseDown) {
-      const { autoplayTimer, computeTranslate, setAutoplayTimer } = this;
+  handleSlidesDragEnd = () => {
+    if(this.dragStarted) {
+      const { autoplayTimer, computeTranslate, setAutoplayTimer, slidesArr } = this;
       const { spaceBetween, slidesPerView, pickAdjacentAfterDrag, transitionDuration } = this.props;
       const { innerTranslate, slideWidth } = this.state;
 
@@ -239,6 +264,7 @@ class Carousel extends Component {
         const r = innerTranslate / (slideWidth + 2 * spaceBetween);
         activeIndex = (r % 1 > 0.5? parseInt(r) + 1 : parseInt(r)) + parseInt(slidesPerView / 2);
       }
+      this.centerSlideIndex = slidesArr[activeIndex].index;
 
       this.setState({
         activeIndex,
@@ -250,16 +276,19 @@ class Carousel extends Component {
       if(!autoplayTimer) {
         this.autoplayTimer = setAutoplayTimer();
       }
-      this.mouseDown = false;
+      this.dragStarted = false;
     }
   }
 
   componentDidMount() {
-    const { setAutoplayTimer, setSlideWidth } = this;
+    const { computeSlidesArr, setAutoplayTimer, setSlideWidth } = this;
 
     setSlideWidth();
 
-    window.addEventListener('resize', setSlideWidth);
+    window.addEventListener('resize', debounce(() => {
+      this.slidesArr = computeSlidesArr(this.props);
+      setSlideWidth();
+    }, false, 500));
 
     // initiate carousel movement timer
     this.autoplayTimer = setAutoplayTimer();
@@ -273,6 +302,7 @@ class Carousel extends Component {
     if(transition === 'none' && slidesMoved) {
       // move slides after abrupt rollback
       let newActiveIndex = activeIndex + slidesMoved;
+      this.centerSlideIndex = slidesArr[newActiveIndex].index;
       this.transitionTimer = setTimeout(() => {
         this.setState({
           activeIndex: newActiveIndex,
@@ -304,7 +334,7 @@ class Carousel extends Component {
   }
 
   render() {
-    const { carouselRef, nextSlide, prevSlide, slidesArr } = this;
+    const { carouselRef, handleSlidesDragStart, handleSlidesDragMove, handleSlidesDragEnd, nextSlide, prevSlide, slidesArr } = this;
     const { activeEnlargeFactor, slides, spaceBetween, navigation: { prev, next, prevClass, nextClass} } = this.props;
     const { innerWidth, slideWidth, activeIndex, innerTranslate, transition, cursor } = this.state;
 
@@ -330,9 +360,12 @@ class Carousel extends Component {
                 transition,
                 cursor,
               }}
-              onMouseDown={this.handleSlidesMouseDown}
-              onMouseMove={this.handleSlidesMouseMove}
-              onMouseUp={this.handleSlidesMouseUp}
+              onMouseDown={ handleSlidesDragStart }
+              onMouseMove={ handleSlidesDragMove }
+              onMouseUp={ handleSlidesDragEnd }
+              onTouchStart={ handleSlidesDragStart }
+              onTouchMove={ handleSlidesDragMove }
+              onTouchEnd={ handleSlidesDragEnd }
             >
               {slidesArr.map((slide, index) => (
                 <li
@@ -388,7 +421,7 @@ class Carousel extends Component {
 
 Carousel.defaultProps = {
   slidesPerView: 1,
-  startActiveIndex: 0,
+  initialCenterSlideIndex: 0,
   activeEnlargeFactor: 1,
   spaceBetween: 30,
   interval: 3000,

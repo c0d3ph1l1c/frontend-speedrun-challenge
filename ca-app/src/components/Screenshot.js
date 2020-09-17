@@ -32,7 +32,6 @@ class Screenshot extends Component {
       let clientWidth =
         document.documentElement.clientWidth || document.body.clientWidth;
         let slidePerView = clientWidth >= 992 ? 5 : (clientWidth >= 480 ? 3 : 1);
-        console.log(clientWidth);
 
       this.setState({
         slidePerView
@@ -49,7 +48,7 @@ class Screenshot extends Component {
         <Carousel 
           slides={ appArr } 
           slidesPerView={ slidePerView } 
-          startActiveIndex={ 0 }
+          initialCenterSlideIndex={ 0 }
           activeEnlargeFactor={ 1.2 }
           interval={ 5000 }
           transitionDuration={ 1000 }
