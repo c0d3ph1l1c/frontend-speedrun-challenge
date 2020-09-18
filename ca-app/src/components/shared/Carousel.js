@@ -5,16 +5,16 @@ import { debounce } from '../../utils';
 class Carousel extends Component {
   constructor(props) {
     super(props);
-    let { initialCenterSlideIndex, transitionDuration } = this.props;
+    let { initialCenterSlideId, transitionDuration } = this.props;
 
     this.carouselRef = React.createRef();
 
-    this.centerSlideIndex = initialCenterSlideIndex;
+    this.centerSlideIndex = initialCenterSlideId;
     this.slidesArr = this.computeSlidesArr(this.props);
     this.state = {
       innerWidth: 'auto',
       slideWidth: 'auto',
-      activeIndex: this.slidesArr.findIndex(slide => slide.index === initialCenterSlideIndex && !slide.clone),
+      activeIndex: this.slidesArr.findIndex(slide => slide.id === initialCenterSlideId && !slide.clone),
       innerTranslate: 0,
       transition: `transform ${transitionDuration}ms ease`,
       cursor: 'auto'
@@ -22,7 +22,7 @@ class Carousel extends Component {
   }
 
   computeSlidesArr = props => {
-    let { interval, slides, slidesPerView, initialCenterSlideIndex, transitionDuration } = props;
+    let { interval, slides, slidesPerView, initialCenterSlideId, transitionDuration } = props;
 
     if(Math.abs(interval - transitionDuration) < 100) {
       throw new Error(`Carousel Error: interval and transitionDuration has to be at least 100ms apart`);
@@ -33,12 +33,12 @@ class Carousel extends Component {
     if (slidesPerView > slides.length) {
       throw new Error(`Carousel Error: slidesPerView must not be larger than slides.length`);
     }
-    if (initialCenterSlideIndex < 0 || initialCenterSlideIndex >= slides.length) {
-      throw new Error(`Carousel Error: initialCenterSlideIndex must be between 0 and slides.length (inclusive)`);
+    if (initialCenterSlideId < 0 || initialCenterSlideId >= slides.length) {
+      throw new Error(`Carousel Error: initialCenterSlideId must be between 0 and slides.length (inclusive)`);
     }
 
     slides = [...slides];
-    const visibleLeftEndIdx = initialCenterSlideIndex - parseInt(slidesPerView / 2);
+    const visibleLeftEndIdx = initialCenterSlideId - parseInt(slidesPerView / 2);
     if (visibleLeftEndIdx < 0) {
       slides.unshift(...slides.splice(visibleLeftEndIdx));
     } else {
@@ -79,7 +79,7 @@ class Carousel extends Component {
       (slidesArr.length - 1) * (slideWidth + 2 * spaceBetween) +
       parseInt(slideWidth * activeEnlargeFactor) +
       2 * spaceBetween;
-    const newActiveIndex = slidesArr.findIndex(slide => slide.index === this.centerSlideIndex && !slide.clone);
+    const newActiveIndex = slidesArr.findIndex(slide => slide.id === this.centerSlideIndex && !slide.clone);
     const innerTranslate = computeTranslate(newActiveIndex, slideWidth);
     this.setState(prevState => ({
       innerWidth,
@@ -108,7 +108,7 @@ class Carousel extends Component {
       isRollingBack = true;
     }
     this.slidesMoved = offset;
-    this.centerSlideIndex = slidesArr[newActiveIndex].index;
+    this.centerSlideIndex = slidesArr[newActiveIndex].id;
 
     this.setState(prevState => ({
       activeIndex: newActiveIndex,
@@ -146,15 +146,19 @@ class Carousel extends Component {
     return setInterval(() => go(1), interval);
   }
 
+  isValidActiveIndex = activeIndex => {
+    return 0 <= activeIndex && activeIndex < this.slidesArr.length;
+  }
+
   handlePaginationClick = e => {
-    const { computeOppositeOffset, computeTranslate, slidesArr } = this;
+    const { computeOppositeOffset, computeTranslate, isValidActiveIndex, slidesArr } = this;
     const { singleSlideTransition, slides, slidesPerView, transitionDuration } = this.props;
     const { activeIndex, slideWidth } = this.state;
-    const paginationIndex = parseInt(e.target.dataset.index);
-    const currIndex = slidesArr[activeIndex].index;
+    const paginationId = parseInt(e.target.dataset.id);
+    const currId = slidesArr[activeIndex].id;
 
     // do nothing if same index
-    const offset = paginationIndex - currIndex;
+    const offset = paginationId - currId;
     if(!offset) return;
 
     // clear all timer
@@ -173,21 +177,17 @@ class Carousel extends Component {
       this.slidesMoved = oppositeOffset;
     }
 
-    console.log('newActiveIndex: ', newActiveIndex);
     // abrupt rollback first if new slides lies beyond visible range
     let isRollingBack = false;
-    if(newActiveIndex < slidesPerView) {
+    if(newActiveIndex < slidesPerView && isValidActiveIndex(activeIndex + slides.length)) {
       newActiveIndex = activeIndex + slides.length;
       isRollingBack = true;
-    } else if(newActiveIndex >= slidesPerView + slides.length) {
+    } else if(newActiveIndex >= slidesPerView + slides.length && isValidActiveIndex(activeIndex - slides.length)) {
       newActiveIndex = activeIndex - slides.length;
       isRollingBack = true;
     }
-    console.log('activeIndex: ', activeIndex);
-    console.log('slides.length: ', slides.length);
-    console.log('newActiveIndex: ', newActiveIndex);
-    console.log('slidesArr: ', slidesArr);
-    this.centerSlideIndex = slidesArr[newActiveIndex].index;
+
+    this.centerSlideIndex = slidesArr[newActiveIndex].id;
     this.setState(prevState => ({
       activeIndex: newActiveIndex,
       innerTranslate: computeTranslate(newActiveIndex, slideWidth),
@@ -264,7 +264,7 @@ class Carousel extends Component {
         const r = innerTranslate / (slideWidth + 2 * spaceBetween);
         activeIndex = (r % 1 > 0.5? parseInt(r) + 1 : parseInt(r)) + parseInt(slidesPerView / 2);
       }
-      this.centerSlideIndex = slidesArr[activeIndex].index;
+      this.centerSlideIndex = slidesArr[activeIndex].id;
 
       this.setState({
         activeIndex,
@@ -302,7 +302,7 @@ class Carousel extends Component {
     if(transition === 'none' && slidesMoved) {
       // move slides after abrupt rollback
       let newActiveIndex = activeIndex + slidesMoved;
-      this.centerSlideIndex = slidesArr[newActiveIndex].index;
+      this.centerSlideIndex = slidesArr[newActiveIndex].id;
       this.transitionTimer = setTimeout(() => {
         this.setState({
           activeIndex: newActiveIndex,
@@ -325,7 +325,7 @@ class Carousel extends Component {
       }, transitionDuration * Math.abs(slidesMoved)); 
     }
 
-    onSlideChange && onSlideChange(slidesArr[activeIndex].index);
+    onSlideChange && onSlideChange(slidesArr[activeIndex].id);
   }
 
   componentWillUnmount() {
@@ -372,7 +372,7 @@ class Carousel extends Component {
                   className={`carousel-slide${slide.clone ? " clone" : ""}${
                     index === activeIndex ? " active" : ""
                   }`}
-                  key={index}
+                  key={ index }
                   style={{ margin: `0 ${spaceBetween}px` }}
                 >
                   <img
@@ -406,11 +406,11 @@ class Carousel extends Component {
           {slides.map((slide, index) => (
             <li
               className={`carousel-pagination${
-                index === slidesArr[activeIndex].index ? " active" : ""
+                index === slidesArr[activeIndex].id ? " active" : ""
               }`}
-              key={index}
+              key={ index }
               onClick={this.handlePaginationClick}
-              data-index={index}
+              data-id={index}
             ></li>
           ))}
         </ul>
@@ -421,7 +421,7 @@ class Carousel extends Component {
 
 Carousel.defaultProps = {
   slidesPerView: 1,
-  initialCenterSlideIndex: 0,
+  initialCenterSlideId: 0,
   activeEnlargeFactor: 1,
   spaceBetween: 30,
   interval: 3000,

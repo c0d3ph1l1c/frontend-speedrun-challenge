@@ -8,12 +8,12 @@ import App4Img from '../static/images/app-4.jpg';
 import App5Img from '../static/images/app-5.jpg';
 
 const appArr = [
-  { index: 0, imgUrl: App1Img, imgAlt: 'App 1' },
-  { index: 1, imgUrl: App2Img, imgAlt: 'App 2' },
-  { index: 2, imgUrl: App3Img, imgAlt: 'App 3' },
-  { index: 3, imgUrl: App4Img, imgAlt: 'App 4' },
-  { index: 4, imgUrl: App5Img, imgAlt: 'App 5' },
-  { index: 5, imgUrl: App3Img, imgAlt: 'App 6' }
+  { id: 0, imgUrl: App1Img, imgAlt: 'App 1' },
+  { id: 1, imgUrl: App2Img, imgAlt: 'App 2' },
+  { id: 2, imgUrl: App3Img, imgAlt: 'App 3' },
+  { id: 3, imgUrl: App4Img, imgAlt: 'App 4' },
+  { id: 4, imgUrl: App5Img, imgAlt: 'App 5' },
+  { id: 5, imgUrl: App3Img, imgAlt: 'App 6' }
 ];
 
 class Screenshot extends Component {
@@ -21,9 +21,11 @@ class Screenshot extends Component {
     super(props);
     let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
     let slidePerView = clientWidth >= 992 ? 5 : clientWidth >= 480 ? 3 : 1;
+    let spaceBetween = clientWidth >= 1200 ? 30 : 22;
 
     this.state = {
-      slidePerView
+      slidePerView,
+      spaceBetween
     };
   }
 
@@ -32,15 +34,17 @@ class Screenshot extends Component {
       let clientWidth =
         document.documentElement.clientWidth || document.body.clientWidth;
         let slidePerView = clientWidth >= 992 ? 5 : (clientWidth >= 480 ? 3 : 1);
+        let spaceBetween = clientWidth >= 1200 ? 30 : 25;
 
       this.setState({
-        slidePerView
+        slidePerView,
+        spaceBetween
       });
     });
   }
 
   render() {
-    const { slidePerView } = this.state;
+    const { slidePerView, spaceBetween } = this.state;
 
     return (
       <div className="screenshot">
@@ -48,7 +52,8 @@ class Screenshot extends Component {
         <Carousel 
           slides={ appArr } 
           slidesPerView={ slidePerView } 
-          initialCenterSlideIndex={ 0 }
+          spaceBetween={ spaceBetween }
+          initialCenterSlideId={ 0 }
           activeEnlargeFactor={ 1.2 }
           interval={ 5000 }
           transitionDuration={ 1000 }
