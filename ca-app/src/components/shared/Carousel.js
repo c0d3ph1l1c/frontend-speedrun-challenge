@@ -299,6 +299,7 @@ class Carousel extends Component {
     const { transitionDuration, onSlideChange } = this.props;
     const { activeIndex, slideWidth, transition } = this.state;
 
+    
     if(transition === 'none' && slidesMoved) {
       // move slides after abrupt rollback
       let newActiveIndex = activeIndex + slidesMoved;
