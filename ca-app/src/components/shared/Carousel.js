@@ -8,6 +8,7 @@ class Carousel extends Component {
     let { initialCenterSlideId, transitionDuration } = this.props;
 
     this.carouselRef = React.createRef();
+    this.innerRef = React.createRef();
 
     this.centerSlideIndex = initialCenterSlideId;
     this.slidesArr = this.computeSlidesArr(this.props);
@@ -200,59 +201,86 @@ class Carousel extends Component {
   }
 
   handleSlidesDragStart = e => {
+    const { innerRef } = this;
+
+    const currInnerTranslate = Math.abs(
+      parseFloat(
+        getComputedStyle(innerRef.current, null).transform
+          .match(
+            /[+-]?(?:[1-9](?:\d+)?|[0-9])(?:(?:\.\d+)?(?:e[+-]?[1-9](?:\d+)?)?)?/g
+          )[4]
+      )
+    );
+
     clearInterval(this.autoplayTimer);
+    clearTimeout(this.transitionTimer);
     this.autoplayTimer = null;
-    this.dragStarted = true;
+    this.slidesMoved = 0;
+    this.dragStarted = 1;
     if(e.type === 'mousedown') {
       this.lastMousePosX = e.clientX;
     } else {
       this.lastMousePosX = e.changedTouches[0].pageX;
     }
+
     this.setState({
-      cursor: 'grab'
+      cursor: "grab",
+      innerTranslate: currInnerTranslate,
     });
   }
 
   handleSlidesDragMove = e => {
-    if(this.dragStarted) {
-      const { activeEnlargeFactor, slides, spaceBetween, slidesPerView } = this.props;
+    if (this.dragStarted === 1 || this.dragStarted === 2) {
+      const {
+        activeEnlargeFactor,
+        slides,
+        spaceBetween,
+        slidesPerView,
+      } = this.props;
       let { activeIndex, innerTranslate, slideWidth } = this.state;
-      if(e.type === 'mousemove') {
+      if (e.type === "mousemove") {
         this.offsetX = this.lastMousePosX - e.clientX;
       } else {
         this.offsetX = this.lastMousePosX - e.changedTouches[0].pageX;
       }
 
       const visibleLimit = {
-        left: activeIndex < slidesPerView
-                ? spaceBetween * 2 * slidesPerView + slideWidth * (slidesPerView + activeEnlargeFactor - 1)
-                : (spaceBetween * 2 + slideWidth) * slidesPerView,
-        right: activeIndex > slidesPerView + slides.length
-                ? spaceBetween * 2 * (slidesPerView + slides.length) + slideWidth * (slidesPerView + slides.length + activeEnlargeFactor - 1)
-                : (spaceBetween * 2 + slideWidth) * (slidesPerView + slides.length)
+        left:
+          activeIndex < slidesPerView
+            ? spaceBetween * 2 * slidesPerView +
+              slideWidth * (slidesPerView + activeEnlargeFactor - 1)
+            : (spaceBetween * 2 + slideWidth) * slidesPerView,
+        right:
+          activeIndex > slidesPerView + slides.length
+            ? spaceBetween * 2 * (slidesPerView + slides.length) +
+              slideWidth *
+                (slidesPerView + slides.length + activeEnlargeFactor - 1)
+            : (spaceBetween * 2 + slideWidth) * (slidesPerView + slides.length),
       };
 
       innerTranslate += this.offsetX;
-      if(innerTranslate < visibleLimit.left) {
+      if (innerTranslate < visibleLimit.left) {
         innerTranslate += visibleLimit.right - visibleLimit.left;
-      } else if(innerTranslate > visibleLimit.right) {
+      } else if (innerTranslate > visibleLimit.right) {
         innerTranslate -= visibleLimit.right - visibleLimit.left;
       }
-      
+
       this.setState({
         innerTranslate,
-        transition: 'none'
+        transition: "none",
       });
-      if(e.type === 'mousemove') {
+      if (e.type === "mousemove") {
         this.lastMousePosX = e.clientX;
       } else {
         this.lastMousePosX = e.changedTouches[0].pageX;
       }
+
+      this.dragStarted = 2;
     }
   }
 
   handleSlidesDragEnd = () => {
-    if(this.dragStarted) {
+    if(this.dragStarted === 2) {
       const { autoplayTimer, computeTranslate, setAutoplayTimer, slidesArr } = this;
       const { spaceBetween, slidesPerView, pickAdjacentAfterDrag, transitionDuration } = this.props;
       const { innerTranslate, slideWidth } = this.state;
@@ -276,8 +304,8 @@ class Carousel extends Component {
       if(!autoplayTimer) {
         this.autoplayTimer = setAutoplayTimer();
       }
-      this.dragStarted = false;
     }
+    this.dragStarted = 0;
   }
 
   componentDidMount() {
@@ -289,6 +317,9 @@ class Carousel extends Component {
       this.slidesArr = computeSlidesArr(this.props);
       setSlideWidth();
     }, false, 500));
+
+    window.addEventListener("mousemove", this.handleSlidesDragMove);
+    window.addEventListener("mouseup", this.handleSlidesDragEnd);
 
     // initiate carousel movement timer
     this.autoplayTimer = setAutoplayTimer();
@@ -335,7 +366,7 @@ class Carousel extends Component {
   }
 
   render() {
-    const { carouselRef, handleSlidesDragStart, handleSlidesDragMove, handleSlidesDragEnd, nextSlide, prevSlide, slidesArr } = this;
+    const { carouselRef, innerRef, handleSlidesDragStart, handleSlidesDragMove, handleSlidesDragEnd, nextSlide, prevSlide, slidesArr } = this;
     const { activeEnlargeFactor, slides, spaceBetween, navigation: { prev, next, prevClass, nextClass} } = this.props;
     const { innerWidth, slideWidth, activeIndex, innerTranslate, transition, cursor } = this.state;
 
@@ -361,9 +392,8 @@ class Carousel extends Component {
                 transition,
                 cursor,
               }}
+              ref={ innerRef }
               onMouseDown={ handleSlidesDragStart }
-              onMouseMove={ handleSlidesDragMove }
-              onMouseUp={ handleSlidesDragEnd }
               onTouchStart={ handleSlidesDragStart }
               onTouchMove={ handleSlidesDragMove }
               onTouchEnd={ handleSlidesDragEnd }
