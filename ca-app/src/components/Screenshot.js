@@ -33,7 +33,9 @@ class Screenshot extends Component {
     window.addEventListener('resize', () => {
       let clientWidth =
         document.documentElement.clientWidth || document.body.clientWidth;
-        let slidePerView = clientWidth >= 992 ? 5 : (clientWidth >= 480 ? 3 : 1);
+        let slidePerView = clientWidth >= 992 
+                            ? 5 
+                            : (clientWidth >= 480 ? 3 : 1);
         let spaceBetween = clientWidth >= 1200 ? 30 : 25;
 
       this.setState({

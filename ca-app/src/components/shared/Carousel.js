@@ -10,6 +10,7 @@ class Carousel extends Component {
     this.carouselRef = React.createRef();
     this.innerRef = React.createRef();
 
+    this.prevId = initialCenterSlideId;
     this.centerSlideIndex = initialCenterSlideId;
     this.slidesArr = this.computeSlidesArr(this.props);
     this.state = {
@@ -25,6 +26,9 @@ class Carousel extends Component {
   computeSlidesArr = props => {
     let { interval, slides, slidesPerView, initialCenterSlideId, transitionDuration } = props;
 
+    if (!slides || !slides.length) {
+      throw new Error(`Carousel Error: slides must be given and its length must be greater than 0`);
+    }
     if(Math.abs(interval - transitionDuration) < 100) {
       throw new Error(`Carousel Error: interval and transitionDuration has to be at least 100ms apart`);
     }
@@ -110,6 +114,7 @@ class Carousel extends Component {
     }
     this.slidesMoved = offset;
     this.centerSlideIndex = slidesArr[newActiveIndex].id;
+    this.prevId = slidesArr[activeIndex].id;
 
     this.setState(prevState => ({
       activeIndex: newActiveIndex,
@@ -201,7 +206,8 @@ class Carousel extends Component {
   }
 
   handleSlidesDragStart = e => {
-    const { innerRef } = this;
+    const { innerRef, slidesArr } = this;
+    const { activeIndex } = this.state;
 
     const currInnerTranslate = Math.abs(
       parseFloat(
@@ -222,6 +228,7 @@ class Carousel extends Component {
     } else {
       this.lastMousePosX = e.changedTouches[0].pageX;
     }
+    this.prevId = slidesArr[activeIndex].id;
 
     this.setState({
       cursor: "grab",
@@ -326,7 +333,7 @@ class Carousel extends Component {
   }
 
   componentDidUpdate() {   
-    const { computeTranslate, slidesArr, slidesMoved, setAutoplayTimer } = this;
+    const { computeTranslate, prevId, slidesArr, slidesMoved, setAutoplayTimer } = this;
     const { transitionDuration, onSlideChange } = this.props;
     const { activeIndex, slideWidth, transition } = this.state;
 
@@ -357,7 +364,10 @@ class Carousel extends Component {
       }, transitionDuration * Math.abs(slidesMoved)); 
     }
 
-    onSlideChange && onSlideChange(slidesArr[activeIndex].id);
+    if (prevId !== slidesArr[activeIndex].id) {
+      onSlideChange && onSlideChange(slidesArr[activeIndex].id);
+      this.prevId = slidesArr[activeIndex].id;
+    }
   }
 
   componentWillUnmount() {
@@ -376,7 +386,7 @@ class Carousel extends Component {
           {
             prev && (
               <span
-                className={`swiper-prev-btn${' ' + prevClass}`}
+                className={`prev-btn${' ' + prevClass}`}
                 onClick={ prevSlide }
               >
                 { !prevClass && '<' }
@@ -425,7 +435,7 @@ class Carousel extends Component {
           {
             next && (
               <span
-                className={`swiper-next-btn${' ' + nextClass}`}
+                className={`next-btn${' ' + nextClass}`}
                 onClick={ nextSlide }
               >
                 {!nextClass && '>'}
