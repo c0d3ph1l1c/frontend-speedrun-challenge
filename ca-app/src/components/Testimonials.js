@@ -25,7 +25,7 @@ const slides = [
       name: "Jennifers",
       position: "Developer",
       rating: 5,
-      quote: `I have been using it for a number of years. I use Colorlib for usability testing. It's great for taking images and making clickable image prototypes that do the job and save me the coding time and just the general hassle of hosting.`,
+      quote: `I use Colorlib for usability testing. It's great for taking images and making clickable image prototypes that do the job and save me the coding time and just the general hassle of hosting.`,
     },
   },
   {
@@ -33,10 +33,10 @@ const slides = [
     imgUrl: ClientImg1,
     imgAlt: "Helen",
     testimonial: {
-      name: "Helens",
+      name: "Helen",
       position: "Marketer",
       rating: 5,
-      quote: `I use Colorlib for usability testing. It's great for taking images and making clickable image prototypes that do the job and save me the coding time and just the general hassle of hosting.`,
+      quote: `I have been using it for a number of years. I use Colorlib for usability testing. It's great for taking images and making clickable image prototypes that do the job.`,
     },
   },
   {
@@ -77,17 +77,31 @@ class Testimonials extends Component {
         ? 1.2 
         : 1.15;
 
+    this.initialCenterSlideId = 0;
+  
+    let { longestQuoteId } = slides.reduce((accum, curr) => {
+      if(curr.testimonial.quote.length > accum.maxQuoteLength) {
+        accum.longestQuoteId = curr.id;
+        accum.maxQuoteLength = curr.testimonial.quote.length;
+      }
+      return accum;
+    }, { longestQuoteId: null, maxQuoteLength: 0 });    
+    this.longestQuoteId = longestQuoteId;
+
     this.state = {
       toggleFlag: 0,
       spaceBetween,
       activeEnlargeFactor,
+      currId: this.initialCenterSlideId,
+      prevId: null
     };
   }
 
   switchTestimonial = index => {
-    console.log(index);
     this.setState(prevState => ({
-      toggleFlag: (prevState.toggleFlag + 1) % 2
+      toggleFlag: (prevState.toggleFlag + 1) % 2,
+      currId: index,
+      prevId: prevState.currId
     }));
   }
 
@@ -123,51 +137,92 @@ class Testimonials extends Component {
   }
 
   render() {
-    const { switchTestimonial } = this;
-    const { activeEnlargeFactor, spaceBetween } = this.state;
+    const { longestQuoteId, switchTestimonial } = this;
+    const { activeEnlargeFactor, currId, prevId, spaceBetween, toggleFlag } = this.state;
+
+    let curr, prev, currRating = [], prevRating = [];
+    if(currId !== null) {
+      curr = slides[currId].testimonial;
+      for(let i = 0; i < curr.rating; i++) {
+        currRating.push(<i className="ion-ios-star" key={i}></i>);
+      }
+    }
+    if(prevId !== null) {
+      prev = slides[prevId].testimonial;
+      for(let i = 0; i < prev.rating; i++) {
+        prevRating.push(<i className="ion-ios-star" key={i}></i>);
+      }
+    }
 
     return (
       <div className="testimonials">
         <div className="container">
           <div className="testimonial">
-            <div className="first">
+            <div className={ `first${!toggleFlag? '': ' hide'}` }>
               <i className="fa fa-quote-left"></i>
               <div className="client-quote">
                 “&nbsp;
                 <span className="quote">
-                  I have been using it for a number of years. I use Colorlib for
-                  usability testing. It's great for taking images and making
-                  clickable image prototypes that do the job and save me the
-                  coding time and just the general hassle of hosting.
+                  { !toggleFlag? curr && curr.quote : prev && prev.quote }
                 </span>
                 &nbsp;”
               </div>
               <div className="rating">
-                <i className="ion-android-star"></i>
+                { !toggleFlag? curr && currRating : prev && prevRating }
               </div>
-              <div className="name">Aigars Silkalns</div>
-              <div className="position">Ceo Colorlib</div>
+              <div className="name">
+                { !toggleFlag? curr && curr.name : prev && prev.name }
+              </div>
+              <div className="position">
+                { !toggleFlag? curr && curr.position : prev && prev.position }
+              </div>
             </div>
-            <div className="second hide">
+            <div className={ `second${toggleFlag? '': ' hide'}` }>
               <i className="fa fa-quote-left"></i>
               <div className="client-quote">
                 “&nbsp;
-                <span className="quote"></span>
+                <span className="quote">
+                  { toggleFlag? curr && curr.quote : prev && prev.quote }
+                </span>
                 &nbsp;”
               </div>
               <div className="rating">
-                <i className="ion-android-star"></i>
+                { toggleFlag? curr && currRating : prev && prevRating }
               </div>
-              <div className="name"></div>
-              <div className="position"></div>
+              <div className="name">
+                { toggleFlag? curr && curr.name : prev && prev.name }
+              </div>
+              <div className="position">
+                { toggleFlag? curr && curr.position : prev && prev.position }
+              </div>
+            </div>
+            <div className="placeholder hide">
+              <i className="fa fa-quote-left"></i>
+              <div className="client-quote">
+                “&nbsp;
+                <span className="quote">
+                  { slides[longestQuoteId].testimonial.quote }
+                </span>
+                &nbsp;”
+              </div>
+              <div className="rating">
+                <i className="ion-ios-star"></i>
+              </div>
+              <div className="name">
+                { slides[longestQuoteId].testimonial.name }
+              </div>
+              <div className="position">
+                { slides[longestQuoteId].testimonial.position }
+              </div>
             </div>
           </div>
           <Carousel
-            slides={slides}
-            slidesPerView={3}
-            spaceBetween={spaceBetween}
-            activeEnlargeFactor={activeEnlargeFactor}
-            initialCenterSlideId={0}
+            slides={ slides }
+            slidesPerView={ 3 }
+            interval= { 4000 }
+            spaceBetween={ spaceBetween }
+            activeEnlargeFactor={ activeEnlargeFactor }
+            initialCenterSlideId={ this.initialCenterSlideId }
             navigation={{
               prev: true,
               next: true,

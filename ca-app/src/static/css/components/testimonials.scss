@@ -5,15 +5,20 @@
 
   .testimonial {
     position: relative;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
     text-align: center;
-
+    
+    .first, .second {
+      opacity: 1;
+      transition: opacity 1s ease;
+    }
 
     .hide {
       opacity: 0;
+      transition: opacity 1s ease;
     }
 
-    .second {
+    .first, .second {
       position: absolute;
       top: 0;
       left: 0;
@@ -26,9 +31,16 @@
     }
 
     .client-quote {
-      width: 80%;
+      width: 100%;
+      font-size: 1.25rem;
+
+      @media screen and (min-width: 768px) {
+        width: 80%;
+        font-size: 1.35rem;
+      }
+
       margin: 0 auto 1.2rem;
-      font-size: 1.35rem;
+      line-height: 1.5;
       color: #777;
     }
 
@@ -36,6 +48,10 @@
       margin-bottom: 0.4rem;
       font-size: 1.3rem;
       color: #F1B922;
+
+      .ion-ios-star {
+        margin: 0 0.25rem;
+      }
     }
 
     .name {
@@ -58,6 +74,7 @@
     }
 
     .prev-btn, .next-btn {
+      font-weight: bold;
       color: #999;
     }
 
@@ -73,7 +90,7 @@
     }
 
     .carousel-paginations {
-      margin: 1rem 0;
+      margin: 1.5rem 0;
 
       .carousel-pagination {
         width: 0.7rem;

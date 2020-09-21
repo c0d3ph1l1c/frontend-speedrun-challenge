@@ -286,8 +286,10 @@ class Carousel extends Component {
     }
   }
 
-  handleSlidesDragEnd = () => {
+  handleSlidesDragEnd = e => {
     if(this.dragStarted === 2) {
+      this.innerRef.current.dispatchEvent(new MouseEvent('mouseup', e));
+    } else if(e.target === this.innerRef.current) {
       const { autoplayTimer, computeTranslate, setAutoplayTimer, slidesArr } = this;
       const { spaceBetween, slidesPerView, pickAdjacentAfterDrag, transitionDuration } = this.props;
       const { innerTranslate, slideWidth } = this.state;
@@ -373,6 +375,8 @@ class Carousel extends Component {
   componentWillUnmount() {
     // clear carousel autoplay timer
     clearInterval(this.autoplayTimer);
+    window.removeEventListener("mousemove", this.handleSlidesDragMove);
+    window.removeEventListener("mouseup", this.handleSlidesDragEnd);
   }
 
   render() {
