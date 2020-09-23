@@ -9,6 +9,7 @@ import Pricing from './components/Pricing';
 import Testimonials from './components/Testimonials';
 import Membership from './components/Membership';
 import Team from './components/Team';
+import Contact from './components/Contact';
 
 class App extends Component {
   render() {
@@ -24,6 +25,7 @@ class App extends Component {
         <Testimonials />
         <Membership />
         <Team />
+        <Contact />
       </>
     );
   }

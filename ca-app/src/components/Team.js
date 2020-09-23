@@ -17,16 +17,16 @@ class Team extends Component {
                 <img src={ Member1 } alt="Jackson Nash"/>
                 <div className="social-media-overlay">
                   <div className="logo-wrapper">
-                    <i class="fa fa-facebook-f"></i>
+                    <i className="fa fa-facebook-f"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-twitter"></i>
+                    <i className="fa fa-twitter"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-google-plus"></i>
+                    <i className="fa fa-google-plus"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-instagram"></i>
+                    <i className="fa fa-instagram"></i>
                   </div>
                 </div>
               </div>
@@ -39,16 +39,16 @@ class Team extends Component {
                 <img src={ Member2 } alt="Jackson Nash"/>
                 <div className="social-media-overlay">
                   <div className="logo-wrapper">
-                    <i class="fa fa-facebook-f"></i>
+                    <i className="fa fa-facebook-f"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-twitter"></i>
+                    <i className="fa fa-twitter"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-google-plus"></i>
+                    <i className="fa fa-google-plus"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-instagram"></i>
+                    <i className="fa fa-instagram"></i>
                   </div>
                 </div>
               </div>
@@ -60,16 +60,16 @@ class Team extends Component {
                 <img src={ Member3 } alt="Jackson Nash"/>
                 <div className="social-media-overlay">
                   <div className="logo-wrapper">
-                    <i class="fa fa-facebook-f"></i>
+                    <i className="fa fa-facebook-f"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-twitter"></i>
+                    <i className="fa fa-twitter"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-google-plus"></i>
+                    <i className="fa fa-google-plus"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-instagram"></i>
+                    <i className="fa fa-instagram"></i>
                   </div>
                 </div>
               </div>
@@ -81,16 +81,16 @@ class Team extends Component {
                 <img src={ Member4 } alt="Jackson Nash"/>
                 <div className="social-media-overlay">
                   <div className="logo-wrapper">
-                    <i class="fa fa-facebook-f"></i>
+                    <i className="fa fa-facebook-f"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-twitter"></i>
+                    <i className="fa fa-twitter"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-google-plus"></i>
+                    <i className="fa fa-google-plus"></i>
                   </div>
                   <div className="logo-wrapper">
-                    <i class="fa fa-instagram"></i>
+                    <i className="fa fa-instagram"></i>
                   </div>
                 </div>
               </div>
