@@ -1,0 +1,47 @@
+@import '../partials.scss';
+
+.membership {
+  padding: 3rem 0;
+  background: linear-gradient(to right, #A765E1, #7872EC);
+  color: #fff;
+
+  .col-left {
+    color: #fdfdfd;
+
+    @media screen and (max-width: 767px) {
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-weight: 300;
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+
+      @media screen and (max-width: 767px) {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .col-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    @media screen and (max-width: 767px) {
+      justify-content: flex-start;
+    }
+
+    button {
+      display: block;
+      padding: 0.8rem 2.3rem;
+      font-weight: bold;
+      font-size: 0.9rem;
+      outline: none;
+      border: none;
+      border-radius: 1.2rem 1.2rem 1.2rem 0;
+      background-color: #fff;
+      color: $candy-apple-red;
+    }
+  }
+}

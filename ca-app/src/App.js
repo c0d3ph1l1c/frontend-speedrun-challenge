@@ -6,7 +6,8 @@ import Propositions from './components/Propositions';
 import Features from './components/Features';
 import Screenshot from './components/Screenshot';
 import Pricing from './components/Pricing';
-import Testimonials from "./components/Testimonials";
+import Testimonials from './components/Testimonials';
+import Membership from './components/Membership';
 
 class App extends Component {
   render() {
@@ -20,6 +21,7 @@ class App extends Component {
         <Screenshot />
         <Pricing />
         <Testimonials />
+        <Membership />
       </>
     );
   }
