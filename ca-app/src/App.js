@@ -8,6 +8,7 @@ import Screenshot from './components/Screenshot';
 import Pricing from './components/Pricing';
 import Testimonials from './components/Testimonials';
 import Membership from './components/Membership';
+import Team from './components/Team';
 
 class App extends Component {
   render() {
@@ -22,6 +23,7 @@ class App extends Component {
         <Pricing />
         <Testimonials />
         <Membership />
+        <Team />
       </>
     );
   }
