@@ -206,6 +206,9 @@ class Carousel extends Component {
   }
 
   handleSlidesDragStart = e => {
+    if(e.type === 'dragstart') {
+      return e.preventDefault();
+    }
     const { innerRef, slidesArr } = this;
     const { activeIndex } = this.state;
 
@@ -288,8 +291,6 @@ class Carousel extends Component {
 
   handleSlidesDragEnd = e => {
     if(this.dragStarted === 2) {
-      this.innerRef.current.dispatchEvent(new MouseEvent('mouseup', e));
-    } else if(e.target === this.innerRef.current) {
       const { autoplayTimer, computeTranslate, setAutoplayTimer, slidesArr } = this;
       const { spaceBetween, slidesPerView, pickAdjacentAfterDrag, transitionDuration } = this.props;
       const { innerTranslate, slideWidth } = this.state;
@@ -407,10 +408,6 @@ class Carousel extends Component {
                 cursor,
               }}
               ref={ innerRef }
-              onMouseDown={ handleSlidesDragStart }
-              onTouchStart={ handleSlidesDragStart }
-              onTouchMove={ handleSlidesDragMove }
-              onTouchEnd={ handleSlidesDragEnd }
             >
               {slidesArr.map((slide, index) => (
                 <li
@@ -435,6 +432,14 @@ class Carousel extends Component {
                 </li>
               ))}
             </ul>
+            <div 
+              className="carousel-inner-wrapper-overlay"
+              onDragStart={ handleSlidesDragStart }
+              onMouseDown={ handleSlidesDragStart }
+              onTouchStart={ handleSlidesDragStart }
+              onTouchMove={ handleSlidesDragMove }
+              onTouchEnd={ handleSlidesDragEnd }
+            ></div>
           </div>
           {
             next && (
