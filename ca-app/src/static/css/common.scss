@@ -13,3 +13,16 @@ a {
 ul {
   list-style: none;
 }
+
+.page-wrapper {
+  position: relative;
+}
+
+main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  box-shadow: 0 5px 10px 5px rgba(0, 0, 0, 0.2);
+}

@@ -1,9 +1,10 @@
 @import "../partials.scss";
 
 .about {
-  margin: 6rem auto 3rem auto!important;
-  padding: 0!important;
+  margin: 0 auto!important;
+  padding: 6rem 0 3rem!important;
   text-align: center;
+  background-color: #fff;
   color: darken($primary-color, 10%);
 
   h3 {
