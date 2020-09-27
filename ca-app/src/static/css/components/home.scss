@@ -1,0 +1,20 @@
+@import '../partials.scss';
+
+.home {
+  position: fixed;
+  bottom: 0;
+  right: 2rem;
+  z-index: 2;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.7rem;
+  line-height: 2.5rem;
+  text-align: center;
+  background-color: $candy-apple-red;
+  color: #fff;
+  cursor: pointer;
+
+  i.ti-angle-up {
+    vertical-align: text-bottom;
+  }
+}
