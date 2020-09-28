@@ -1,11 +1,14 @@
 export function autoscroll(config) {
-  const { el, duration, timingFunction = 'linear'} = config;
+  const { el, offset = 0, duration, timingFunction = 'linear'} = config;
 
   if(typeof el !== 'string') {
     return console.error('[Autoscroll Error]: el must be given and is a valid HTMLElement selector string.');
   }
-  if(typeof duration !== 'number') {
-    return console.error('[Autoscroll Error]: duration must be given and is a number.');
+  if(typeof duration !== 'number' || duration < 0) {
+    return console.error('[Autoscroll Error]: duration must be given and is a non-negative number');
+  }
+  if(typeof offset !== 'number') {
+    return console.error('[Autoscroll Error]: offset must be given and is a number.');
   }
   const timingFunctionOption = ['linear', 'ease-out', 'ease-in'];
   if(timingFunctionOption.indexOf(timingFunction) === -1) {
@@ -18,7 +21,7 @@ export function autoscroll(config) {
 
   const targetEl = document.querySelector(el);
   if(targetEl) {
-    const targetScrollTop = targetEl.getBoundingClientRect().top + initialScrollTop;
+    const targetScrollTop = targetEl.getBoundingClientRect().top + initialScrollTop + offset;
     const delta = targetScrollTop - initialScrollTop;
     let start;
 
@@ -29,6 +32,10 @@ export function autoscroll(config) {
       const elapsed = timestamp - start;
       let currentScrollTop;
 
+      if(duration === 0 || elapsed > duration) {
+        return window.scrollTo(0, targetScrollTop);
+      }
+
       switch(timingFunction) {
         case 'ease-out':
           currentScrollTop = initialScrollTop + delta * (1 - Math.pow(1 - elapsed / duration, 2));
@@ -37,10 +44,6 @@ export function autoscroll(config) {
         default: 
           currentScrollTop = initialScrollTop + delta * elapsed / duration;
           break;
-      }
-
-      if(elapsed > duration) {
-        return window.scrollTo(0, targetScrollTop);
       }
 
       window.scrollTo(0, parseInt(currentScrollTop));

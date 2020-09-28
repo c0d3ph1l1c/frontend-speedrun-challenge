@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Propositions from './Propositions';
 import '../static/css/components/about.scss';
 
 class About extends Component {
@@ -27,6 +28,7 @@ class About extends Component {
             </div>
           </div>
         </div>
+        <Propositions />
       </div>
     );
   }

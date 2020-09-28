@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { throttle } from '../utils';
+import { throttle, autoscroll } from '../utils';
 import '../static/css/components/nav.scss';
 
 class Nav extends Component {
@@ -15,6 +15,7 @@ class Nav extends Component {
     this.navTransitionOngoing = false;
     this.navRef = React.createRef();
     this.navBrandRef = React.createRef();
+    this.headingBarRef = React.createRef();
   }
 
   toggleNav = () => {
@@ -57,6 +58,37 @@ class Nav extends Component {
       this.setState({ navbarClass: 'navbar-absolute'});
     }
   }, true, 30);
+
+  navigate = e => {
+    const { navbarClass } = this.state;
+
+    e.preventDefault();
+    const link = e.target.href;
+    const selector = link.substring(link.lastIndexOf('/')).replace('/', '.');
+    const headingBarHeight = parseInt(getComputedStyle(this.headingBarRef.current, null).height);
+
+    const scrollTop = window.pageYOffset ||
+                      document.documentElement.scrollTop ||
+                      document.body.scrollTop;
+    const targetEl = document.querySelector(selector);
+    const targetStart = targetEl.getBoundingClientRect().top 
+                          + scrollTop - headingBarHeight;
+    const targetEnd = targetEl.getBoundingClientRect().top 
+                          + scrollTop + targetEl.getBoundingClientRect().height - headingBarHeight;             
+    const clientWidth = document.documentElement.clientWidth || 
+                          document.body.clientWidth;                                   
+    const clientHeight = document.documentElement.clientHeight || 
+                         document.body.clientHeight;
+
+    if(scrollTop < targetStart || scrollTop > targetEnd - clientHeight / 2) {
+      autoscroll({
+        el: selector,
+        offset: - headingBarHeight + (navbarClass === 'navbar-absolute' && clientWidth >= 992? 41 : 0),
+        duration: 2000,
+        timingFunction: 'ease-out'
+      });
+    }                         
+  }
 
   componentDidMount() {
     window.addEventListener('scroll', this.scrollHandler);
@@ -129,6 +161,7 @@ class Nav extends Component {
           <div className="row">
             <div 
               className="heading-bar col-lg-2"
+              ref={ this.headingBarRef }
             >
               <div className="row h-100">
                 <div className="col-11 col-96p ml-auto mr-auto">
@@ -153,9 +186,9 @@ class Nav extends Component {
             >
               <div className="container-fluid nav-wrapper"> 
                 <div className="row">
-                  <ul className="navbar-nav col-12 col-lg-9 ml-auto">
+                  <ul className="navbar-nav col-12 col-lg-9 ml-auto" onClick={ this.navigate }>
                     <li className="nav-item">
-                      <a href="/" className="nav-link">Home</a>
+                      <a href="/banner" className="nav-link">Home</a>
                     </li>
                     <li className="nav-item">
                       <a href="/about" className="nav-link">About</a>

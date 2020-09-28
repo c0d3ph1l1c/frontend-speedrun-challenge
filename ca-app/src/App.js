@@ -47,7 +47,6 @@ class App extends Component {
         <main style={{ marginBottom: `${mainMarginBottom}px` }}>
           <Banner />
           <About />
-          <Propositions />
           <Features />
           <Screenshot />
           <Pricing />
