@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { autoscroll } from '../utils/index';
 import '../static/css/components/home.scss';
 
 class Home extends Component {
@@ -7,6 +8,14 @@ class Home extends Component {
     this.state = {
       display: 'none'
     };
+  }
+
+  backToHome = () => {
+    autoscroll({
+      el: '.banner',
+      duration: 2000,
+      timingFunction: 'linear'
+    });
   }
 
   componentDidMount() {
@@ -25,7 +34,7 @@ class Home extends Component {
     const { display } = this.state;
 
     return (
-      <div className="home" style={{ display }}>
+      <div className="home" style={{ display }} onClick={ this.backToHome }>
         <i className="ti-angle-up"></i>
       </div>
     )
