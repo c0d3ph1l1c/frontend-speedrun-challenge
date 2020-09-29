@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
+import { LazyLoader } from '../utils/index';
 import '../static/css/components/banner.scss';
 import BannerImg from '../static/images/welcome-img.png';
 
 class Banner extends Component {
+  componentDidMount() {
+    LazyLoader.add({
+      el: '.banner-img',
+    });
+  }
+
   render() {
     return (
       <div className="banner">
@@ -20,7 +27,7 @@ class Banner extends Component {
             </div>
           </div>
         </div>
-        <img src={BannerImg} alt=""/>
+        <img className="banner-img" src={ BannerImg } alt=""/>
       </div>
     );
   }

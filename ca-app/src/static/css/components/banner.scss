@@ -118,6 +118,9 @@
     bottom: -8%;
     right: 0;
     width: 88%;
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: opacity 1s ease 0.5s, transform 1s ease 0.5s;
 
     @media screen and (min-width: 480px) {
       right: 0%;
@@ -139,6 +142,11 @@
       bottom: -14.5%;
       right: 6.5%;
       width: 45%;
+    }
+
+    &.lazy-loaded {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
