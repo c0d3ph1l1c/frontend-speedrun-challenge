@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
+import { LazyLoader } from '../utils/index';
 import '../static/css/components/propositions.scss';
 import PropositionsImg from '../static/images/special.png';
 
 class Propositions extends Component {
+  componentDidMount() {
+    LazyLoader.add({
+      el: '.propositions button'
+    });
+  }
+
   render() {
     return (
       <div className="propositions">
         <div className="container">
           <div className="row justify-content-between">
             <div className="image col-lg-6">
-              <img src={PropositionsImg} alt="Propositions"/>
+              <img src={ PropositionsImg } alt="Propositions"/>
             </div>
             <div className="col-lg-6 col-xl-5">
               <div className="description">

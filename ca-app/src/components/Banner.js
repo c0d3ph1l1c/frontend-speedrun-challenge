@@ -4,10 +4,24 @@ import '../static/css/components/banner.scss';
 import BannerImg from '../static/images/welcome-img.png';
 
 class Banner extends Component {
+  constructor(props) {
+    super(props);
+    this.imgRef = React.createRef();
+  }
+
   componentDidMount() {
-    LazyLoader.add({
-      el: '.banner-img',
-    });
+    const img = this.imgRef.current;
+    if(img.complete && img.naturalHeight !== 0) {
+      LazyLoader.add({
+        el: img,
+      });
+    } else {
+      img.onload = function() {
+        LazyLoader.add({
+          el: img,
+        });
+      }
+    }
   }
 
   render() {
@@ -27,7 +41,7 @@ class Banner extends Component {
             </div>
           </div>
         </div>
-        <img className="banner-img" src={ BannerImg } alt=""/>
+        <img className="banner-img" src={ BannerImg } alt="" ref={ this.imgRef } />
       </div>
     );
   }

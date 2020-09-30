@@ -121,8 +121,23 @@
         justify-content: center;
         margin-bottom: 5rem; 
 
-        .figure {
-          align-self: flex-end;
+        @media screen and (min-width: 768px) {
+          opacity: 0;
+          transform: translateY(30px);
+
+          @for $i from 1 through 4 {
+            &.stat-#{$i} {  
+              transition: opacity 1s ease (0.3 + ($i - 1) * 0.3) + s, transform 1s ease (0.3 + ($i - 1) * 0.3) + s;
+            }
+
+            &.lazy-loaded.stat-#{$i} {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        }
+
+        .placeholder, .figure {
           font-size: 3.6rem;
           line-height: 1;
 
@@ -133,6 +148,21 @@
           @media screen and (min-width: 992px) {
             font-size: 3.6rem;
           }
+        }
+
+        .placeholder {
+          position: relative;
+          align-self: flex-end;
+
+          span {
+            opacity: 0;
+          }
+        }
+
+        .figure {
+          position: absolute;
+          bottom: 0;
+          left: 0;
         }
 
         .description {

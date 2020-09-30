@@ -1,7 +1,19 @@
 import React, { Component } from  'react';
+import { LazyLoader } from  '../utils/index';
 import '../static/css/components/membership.scss';
 
 class Membership extends Component {
+  componentDidMount() {
+    const clientWidth = document.documentElement.clientWidth ||
+                        document.body.clientWidth;
+
+    if(clientWidth >= 768) {
+      LazyLoader.add({
+        el: '.membership button',
+      });
+    }
+  }
+
   render() {
     return (
       <div className="membership">

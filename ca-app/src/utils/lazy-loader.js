@@ -13,28 +13,29 @@
                          document.body.clientHeight;                         
 
     this.lazyLoadObjs.forEach(lazyLoadObj => {
-      const { elem, srcAttr, loadedClass, thresholdOffsetFactor, callback } = lazyLoadObj;
-      const elemTop = elem.getBoundingClientRect().top + scrollTop;
-      const elemHeight = elem.getBoundingClientRect().height;
+      const { elems, srcAttr, loadedClass, thresholdOffsetFactor, callback } = lazyLoadObj;
 
-      document.title = `${scrollTop + clientHeight + thresholdOffsetFactor * elemHeight} ${elemTop}`
+      !lazyLoadObj.loaded && (lazyLoadObj.loaded = new Array(lazyLoadObj.elems.length).fill(false));
 
-      // console.log({ bottom: scrollTop + clientHeight + thresholdOffsetFactor * elemHeight, elemTop});
-
-      if(scrollTop + clientHeight + thresholdOffsetFactor * elemHeight > elemTop) {
-        const dataSrc = elem.getAttribute(srcAttr);
-        if(dataSrc) {
-          elem.setAttribute('src', dataSrc);
+      Array.prototype.forEach.call(elems, (elem, index) => {
+        const elemTop = elem.getBoundingClientRect().top + scrollTop;
+        const elemHeight = elem.getBoundingClientRect().height;
+        
+        if(scrollTop + clientHeight + thresholdOffsetFactor * elemHeight > elemTop && elemTop + elemHeight > scrollTop) {
+          const dataSrc = elem.getAttribute(srcAttr);
+          if(dataSrc) {
+            elem.setAttribute('src', dataSrc);
+          }
+          elem.classList.add(loadedClass);
+          callback && callback.call(elem, scrollTop);
+          lazyLoadObj.loaded[index] = true;
         }
-        elem.classList.add(loadedClass);
-        callback && callback.call(elem, scrollTop);
-        lazyLoadObj.loaded = true;
-      }
+      });
     });
 
     let i = 0; 
     for(; i < this.lazyLoadObjs.length; i++) {
-      if(this.lazyLoadObjs[i].loaded) {
+      if(this.lazyLoadObjs[i].loaded && this.lazyLoadObjs[i].loaded.length === this.lazyLoadObjs[i].elems.length && this.lazyLoadObjs[i].loaded.every(flag => flag)) {
         this.lazyLoadObjs.splice(i--, 1);
       }
     }
@@ -43,8 +44,11 @@
   add(lazyLoadObj) {
     const { el, srcAttr = 'data-lazy-src', loadedClass = 'lazy-loaded', thresholdOffsetFactor = 0, callback } = lazyLoadObj;
 
-    if(typeof el !== 'string') {
-      return console.error('[LazyLoader Error]: el must be given and is a valid HTMLElement selector string.');
+    if(typeof el !== 'string' && 
+       !(el && el.nodeType === 1) && 
+       !(typeof el[Symbol.iterator] == 'function' && 
+         Array.prototype.every.call(el, el => !(el && el.nodeType === 1)))) {
+      return console.error('[LazyLoader Error]: el must be given and is either a valid DOM string, element node, or iterable collection of element nodes');
     }
     if(typeof srcAttr !== 'string' || !srcAttr.match(/^data-/)) {
       return console.error(`[LazyLoader Error]: srcAttr must be a string and begins with 'data-'.`);
@@ -59,12 +63,21 @@
       return console.error('[LazyLoader Error]: callback must be a function.');
     }
 
-    const targetEl = document.querySelector(el);
-    if(!targetEl) { 
-      return console.error(`[LazyLoader Error]: Element given by selector 'el' is not found.`)
+    let targetElems;
+    if(typeof el === 'string') {
+      targetElems = document.querySelectorAll(el);
+      if(!targetElems) { 
+        return console.error(`[LazyLoader Error]: Element given by selector 'el' is not found.`)
+      }
+    } else {
+      if(!!(el && el.nodeType === 1)) {
+        targetElems = [el];
+      } else {
+        targetElems = el;
+      }
     }
-
-    lazyLoadObj.elem = targetEl;
+    
+    lazyLoadObj.elems = targetElems;
     lazyLoadObj.srcAttr = srcAttr;
     lazyLoadObj.loadedClass = loadedClass;
     lazyLoadObj.thresholdOffsetFactor = thresholdOffsetFactor;

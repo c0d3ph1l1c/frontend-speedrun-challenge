@@ -49,6 +49,33 @@
         background-color: rgb(91, 50, 180);
         color: #fff;
       }
+
+      @media screen and (min-width: 768px) {
+        opacity: 0;
+
+        &.lazy-loaded {
+          animation: drop-down 1.2s ease-out 0.3ms forwards;
+        }
+
+        @keyframes drop-down {
+          0% {
+            transform: translateY(-2000px);
+          }
+          1%{
+            opacity: 1;
+          }
+          70% {
+            transform: translateY(30px);
+          }
+          85% {
+            transform: translateY(-15px);
+          }
+          100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+      }
     }
   }
 }

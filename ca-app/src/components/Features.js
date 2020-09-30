@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { LazyLoader } from '../utils/index';
 import Modal from './shared/Modal';
 import '../static/css/components/features.scss';
 import VideoImg from '../static/images/video.jpg';
@@ -33,6 +34,31 @@ class Features extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.adjustVideoTop);
+    LazyLoader.add({
+      el: '.stat',
+      callback: function() {
+        const figureEl = this.querySelector('.figure');
+        const max = parseInt(figureEl.getAttribute('max'));
+        let start, duration = 4000;
+
+        function increment(timestamp) {
+          if(start === undefined) {
+            start = timestamp;
+          }
+          const elapsed = timestamp - start;
+          const currValue = parseInt(figureEl.innerHTML);
+          const newValue = parseInt(elapsed / duration * max);
+          if(currValue < newValue) {
+            figureEl.innerHTML = Math.min(newValue, max);
+          }
+          if(newValue < max) {
+            requestAnimationFrame(increment);
+          }
+        }
+
+        requestAnimationFrame(increment);
+      }
+    });
   }
 
   componentDidUpdate() {
@@ -120,32 +146,44 @@ class Features extends Component {
         <div className="stats">
           <div className="container">
             <div className="row">
-              <div className="col-md-3 stat">
-                <div className="figure" max="90">90</div>
+              <div className="col-md-3 stat stat-1">
+                <div className="placeholder">
+                  <span>90</span>
+                  <div className="figure" max="90">0</div>
+                </div>
                 <div className="description">
                   <i className="ion-arrow-down-a"></i>
                   <p>APP</p>
                   <p>DOWNLOADS</p>
                 </div>
               </div>
-              <div className="col-md-3 stat">
-                <div className="figure" max="120">120</div>
+              <div className="col-md-3 stat stat-2">
+                <div className="placeholder">
+                  <span>120</span>
+                  <div className="figure" max="120">0</div>
+                </div>
                 <div className="description">
                   <i className="ion-happy-outline"></i>
                   <p>HAPPY</p>
                   <p>CLIENTS</p>  
                 </div>
               </div>
-              <div className="col-md-3 stat">
-                <div className="figure" max="40">40</div>
+              <div className="col-md-3 stat stat-3">
+                <div className="placeholder">
+                  <span>40</span>
+                  <div className="figure" max="40">0</div>
+                </div>
                 <div className="description">
                   <i className="ion-person"></i>
                   <p>ACTIVE</p>
                   <p>ACCOUNTS</p> 
                 </div>
               </div>
-              <div className="col-md-3 stat">
-                <div className="figure" max="10">10</div>
+              <div className="col-md-3 stat stat-4">
+                <div className="placeholder">
+                  <span>10</span>
+                  <div className="figure" max="10">0</div>
+                </div>
                 <div className="description">
                   <i className="ion-ios-star-outline"></i>
                   <p>TOTAL</p>
