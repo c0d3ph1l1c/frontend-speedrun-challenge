@@ -12,7 +12,6 @@ class Loading extends Component {
 
   componentDidMount() {
     window.addEventListener('load', () => {
-      console.log('load');
       this.setState({
         isLoading: false
       });
