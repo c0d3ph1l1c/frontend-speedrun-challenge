@@ -1,0 +1,134 @@
+@import "../partials.scss";
+
+.propositions {
+  padding-bottom: 6rem!important;
+  background-color: #fff;
+  
+  @media screen and (min-width: 992px) {
+    padding-top: 6rem!important;
+  }
+
+  .image {
+    img {
+      display: inline-block;
+      width: 100%;
+      
+      @media screen and (min-width: 768px) {
+        width: 90%;
+      }
+      
+      @media screen and (min-width: 992px) {
+        width: 100%;
+      }
+    }
+  }
+
+  .description {
+    h3 {
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      font-weight: normal;
+      color: darken($primary-color, 10%);
+      
+      @media screen and (min-width: 992px) {
+        font-size: 3rem;
+      }
+    }
+
+    p {
+      color: rgba(0,0,0,0.7);
+      line-height: 1.5;
+      margin-bottom: 3rem;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+
+      @media screen and (min-width: 768px) {
+        flex-direction: row;
+      }
+    
+      button {
+        width: 100%;
+        padding: 1rem 2rem;
+        font-family: cabin, sans-serif;
+        font-weight: bold;
+        border: 0;
+        outline: none;
+        border-radius: 2rem 2rem 2rem 0;
+        background-color: #fff;     
+        box-shadow: 3px 6px 25px 0 rgba(0, 0, 0, 0.15);
+        color: rgba(0,0,0,0.7);
+        cursor: pointer;
+        transition: background-color 0.5s ease, 
+                    color 0.5s ease, 
+                    box-shadow 0.5s ease, 
+                    opacity 1s ease, 
+                    transform 1s ease;
+
+        &:hover {
+          background-color: $candy-apple-red;
+          color: #fff;
+          box-shadow: 3px 6px 25px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        @media screen and (min-width: 768px) {
+          width: auto;
+        }
+
+        &:first-of-type {
+          margin-right: 1.5rem;
+
+          @media screen and (max-width: 767px) {
+            margin-bottom: 1.5rem;
+          }
+
+          @media screen and (min-width: 768px) {
+            opacity: 0;
+            transform: translateY(-30px);
+      
+            &.lazy-loaded {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        }
+
+        &:last-of-type {
+          @media screen and (min-width: 768px) {
+            opacity: 0;
+            transform: translateY(30px);
+      
+            &.lazy-loaded {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        }
+
+        .btn-content-wrapper {
+          display: flex;
+
+          i {
+            font-size: 1.5rem;
+            color: inherit;
+          }
+
+          .platform {
+            display: flex;
+            flex-direction: column;
+            margin-left: 0.5rem;
+            line-height: 0.9rem;
+            text-align: left;
+            color: inherit;
+
+            .store {
+              font-size: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

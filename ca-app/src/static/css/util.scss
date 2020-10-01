@@ -1,0 +1,130 @@
+*, ::before, ::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.container, .container-fluid {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+}
+
+$sizes: '', 'sm-', 'md-', 'lg-', 'xl-';
+
+@each $size in $sizes {
+  @for $i from 1 through 12 {
+    .col-#{$size + $i} {
+      box-sizing: border-box;
+      padding: 0 15px;
+
+      @if $size != '' {
+        flex: 0 0 100%;
+      }
+    }
+  }
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 ($i / 12) * 100%; 
+    max-width: ($i / 12) * 100%;
+  }
+}
+
+.d-none {
+  display: none!important;
+}
+
+.d-block { 
+  display: block!important; 
+}
+
+@media screen and (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+  @for $i from 1 through 12 {
+    .col-sm-#{$i} { 
+      flex: 0 0 ($i / 12) * 100%; 
+      max-width: ($i / 12) * 100%; 
+    }
+  }
+  .d-sm-none { display: none!important; }
+  .d-sm-block { display: block!important; }
+}
+@media screen and (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+  $sizes: 'sm-', 'md-';
+  @each $size in $sizes {
+    @for $i from 1 through 12 {
+      .col-#{$size + $i} { 
+        flex: 0 0 ($i / 12) * 100%; 
+        max-width: ($i / 12) * 100%; 
+      }
+    }
+  }
+  .d-sm-none, .d-md-none { display: none!important; }
+  .d-sm-block, .d-md-block { display: block!important; }
+}
+@media screen and (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+  $sizes: 'sm-', 'md-', 'lg-';
+  @each $size in $sizes {
+    @for $i from 1 through 12 {
+      .col-#{$size + $i} { 
+        flex: 0 0 ($i / 12) * 100%; 
+        max-width: ($i / 12) * 100%; 
+      }
+    }
+  }
+  .d-sm-none, .d-md-none, .d-lg-none { display: none!important; }
+  .d-sm-block, .d-md-block, .d-lg-block { display: block!important; }
+}
+@media screen and (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+  $sizes: 'sm-', 'md-', 'lg-', 'xl-';
+  @each $size in $sizes {
+    @for $i from 1 through 12 {
+      .col-#{$size + $i} { 
+        flex: 0 0 ($i / 12) * 100%; 
+        max-width: ($i / 12) * 100%; 
+      }
+    }
+  }
+  .d-sm-none, .d-md-none, .d-lg-none, .d-xl-none { display: none!important; }
+  .d-sm-block, .d-md-block, .d-lg-block, .d-xl-block { display: block!important; }
+}
+
+.m-auto { margin: auto!important; }
+.mt-auto { margin-top: auto!important; }
+.mb-auto { margin-bottom: auto!important; }
+.ml-auto { margin-left: auto!important; }
+.mr-auto { margin-right: auto!important; }
+
+.justify-content-start { justify-content: flex-start!important; }
+.justify-content-end { justify-content: flex-end!important; }
+.justify-content-center { justify-content: center!important; }
+.justify-content-around { justify-content: space-around!important; }
+.justify-content-between { justify-content: space-between!important; }
+
+.align-items-start { align-items: flex-start!important; }
+.align-items-end { align-items: flex-end!important; }
+.align-items-center { align-items: center!important; }
+.align-items-baseline { align-items: baseline!important; }
+.align-items-stretch { align-items: stretch!important; }
+
+.w-100 { width: 100%!important; }
+.h-100 { height: 100%!important; }

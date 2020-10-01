@@ -1,0 +1,105 @@
+@import '../partials.scss';
+
+.contact {
+  background-color: #F5F9FC;
+  color: darken($primary-color, 10%);
+  padding: 6rem 0;
+
+  .contact-details {
+    @media screen and (max-width: 767px) {
+      margin-bottom: 2.5rem;
+    }
+
+    h3 {
+      margin-bottom: 3.5rem;
+      font-size: 2rem;
+      font-weight: normal;
+  
+      @media screen and (min-width: 768px) {
+        font-size: 2.4rem;
+      }
+      
+      @media screen and (min-width: 992px) {
+        font-size: 3rem;
+      }
+  
+      &::after {
+        content: '';
+        display: block;
+        width: 5rem;
+        height: 0.15rem;
+        margin: 1rem 0;
+        background-color: $candy-apple-red;
+      }
+    }
+
+    p {
+      line-height: 1.5;
+      color: #666;
+    }
+
+    .details {
+      margin-top: 3rem;
+      font-size: 1.1rem;
+      
+      p { 
+        line-height: 2.2rem;
+
+        .detail {
+          color: darken($primary-color, 15%);
+        }
+      }
+    }
+  }
+
+  .contact-form {
+    form {
+      .form-control {
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 1.25rem 1rem;
+        font: bold 1.1rem Cabin, sans-serif;
+        border: 1px solid #ddd;
+        border-radius: 2rem 2rem 2rem 0;
+        color: #686868;
+        outline: none;
+
+        &:focus {
+          box-shadow: 0 0 2px 3px rgba(147, 187, 246, 0.8); 
+        }
+
+        &::placeholder {
+          color: #ddd;
+        }
+      }
+
+      textarea.form-control {
+        height: 7rem;
+        padding-top: 0.5rem;
+        resize: vertical;
+        
+        &::placeholder {
+          font-size: 1rem;
+        }
+      }
+
+      input[type="submit"] {
+        display: block;
+        padding: 1rem 3.5rem;
+        font-size: 1rem;
+        font-family: inherit;
+        outline: none;
+        border: none;
+        border-radius: 1.5rem 1.5rem 1.5rem 0;
+        background-color: $candy-apple-red;
+        color: #fff;
+        transition: background-color 0.5s ease, color 0.5s ease;
+  
+        &:hover {
+          background-color: rgb(91, 50, 180);
+          color: #fff;
+        }
+      }
+    }
+  }
+}

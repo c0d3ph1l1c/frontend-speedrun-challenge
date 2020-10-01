@@ -1,0 +1,94 @@
+@import "../partials.scss";
+
+.pricing {
+  background-color: #F5F9FC;
+  color: darken($primary-color, 10%);
+  padding: 6rem 0;
+
+  h3 {
+    margin-bottom: 3.5rem;
+    font-size: 2rem;
+    font-weight: normal;
+    text-align: center;
+
+    @media screen and (min-width: 768px) {
+      font-size: 2.4rem;
+    }
+    
+    @media screen and (min-width: 992px) {
+      font-size: 3rem;
+    }
+
+    &::after {
+      content: '';
+      display: block;
+      width: 5rem;
+      height: 0.15rem;
+      margin: 1rem auto;
+      background-color: $candy-apple-red;
+    }
+  }
+
+  .plans {
+    padding: 0 2rem; 
+
+    .plan {
+      margin-bottom: 2rem;
+      padding: 0;
+      text-align: center;
+      background-color: #fff;
+      border: 1px solid #eaeaea;
+      border-radius: 2rem 2rem 2rem 0;
+      overflow: hidden;
+
+      .head {
+        padding: 2.5rem 0;
+        border-bottom: 1px solid #eaeaea;
+
+        h4 {
+          margin-bottom: 0.5rem;
+          font-size: 1.2rem;
+          font-weight: normal
+        }
+
+        .price {
+          font-size: 1.2rem;
+          color: $candy-apple-red;
+
+          .price-figure {
+            font-size: 3rem;
+            line-height: 1;
+            vertical-align: text-top;
+          }
+        }
+      }
+
+      .plan-feature {
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #eaeaea;
+        color: #666;
+      }
+
+      .select-plan {
+        padding: 0.8rem;
+        background-color: rgb(114,106,132);
+        color: #fff;
+        transition: background-color 1s ease;
+      }
+
+      &.favourite .head {
+        background-color: rgb(168,101,225);
+        color: #fff;
+
+        .price {
+          color: #fff;
+        }
+      }
+
+      &:hover .select-plan,
+      &.favourite .select-plan  {
+        background-color: rgb(168,101,225);
+      }
+    }
+  }
+}

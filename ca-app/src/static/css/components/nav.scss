@@ -1,0 +1,228 @@
+@import "../partials.scss";
+
+.navbar {
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0!important;
+  color: #fff;
+
+  &.navbar-absolute {
+    position: absolute;
+    z-index: 2;
+  }
+
+  &.navbar-fixed {
+    position: fixed;
+    transform: translateY(-100%);
+    animation: slide-in 0.5s ease 0.5s forwards;
+    z-index: 2;
+    
+    @media screen and (max-width: 991px) {
+      .heading-bar {
+        background-color: $primary-color;
+        box-shadow: 0 1px 10px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .col-96p {
+        flex: 0 0 96%;
+        max-width: 96%;
+      }
+    }
+    
+    @media screen and (min-width: 992px) {
+      box-shadow: 0 1px 10px 5px rgba(0, 0, 0, 0.1);
+      background-color: $primary-color;
+    }
+
+    .navbar-brand a {
+      font-size: 3rem;
+    }
+
+    .navbar-collapse .navbar-nav .nav-item .nav-link {
+      padding: 0.5rem 0;
+    }
+  }
+
+  @keyframes slide-in {
+    100% { transform: translateY(0); }
+  }
+
+  @media screen and (min-width: 992px) {
+    padding: 0 3.5% 0 3.5%!important;
+  }
+
+  .navbar-brand {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;;
+    box-sizing: border-box;
+    margin: 0;  
+
+    @media screen and (min-width: 992px) {
+      padding-left: 2rem;
+    }
+
+    a {
+      font-weight: bold;
+      font-size: 3rem;
+      transition: font-size 0.5s linear;
+    }
+
+    @media screen and (min-width: 992px) {
+      a {
+        font-size: 2.6rem;
+      }
+    }
+
+    @media screen and (min-width: 1200px) {
+        a {
+          font-size: 4.5rem;
+        }
+    }
+  }
+
+  .navbar-toggle {
+    position: relative;
+    display: block;
+    width: 3.5rem;
+    height: 2.5rem;
+    margin: 0.75rem 0;
+    margin-left: auto;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+    background-color: transparent;
+
+    &:focus {
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 45%;
+      height: 0.08rem;
+      background-color: rgba(0, 0, 0, 0.9);
+      transform: translate(-50%, -50%);
+
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+
+      &::before { top: -0.5rem; }
+      &::after { bottom: -0.5rem; }
+    }
+  }
+  
+  .navbar-collapse {
+    box-sizing: border-box;
+    font-weight: bold;
+    background-color: $secondary-color;
+    transition: height 0.3s ease-out;
+    overflow: hidden;
+
+    &.expandBegun, &.expanding, &.expanded, &.beginCollapse, &.collapsing {
+      visibility: visible;
+    }
+
+    &.collapsed, &.beginExpand {
+      visibility: hidden;
+    }
+    
+    @media screen and (min-width: 992px) {
+      height: auto!important;
+      background-color: transparent;
+      overflow: visible;
+      visibility: visible!important;
+    }
+
+    .nav-wrapper {
+      @media screen and (min-width: 768px) and (max-width: 991px){
+        padding: 1rem 2rem;
+      }
+    }
+
+    .navbar-nav {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding: 1rem 0.5rem;
+
+      @media screen and (min-width: 992px) {
+        flex-direction: row;
+        padding: 1rem 0;
+      }
+
+      .nav-item {
+        margin: 0 0.5rem;
+        transition: margin 0.3s linear;
+        
+        @media screen and (min-width: 1200px) {
+          margin: 0 1rem;
+        }
+
+        .nav-link  {
+          display: block;
+          padding: 0.5rem 0;
+          text-align: center;
+          transition: padding 0.3s ease-out;
+
+          @media screen and (min-width: 768px) {
+            padding: 0.6rem 0;
+          }
+
+          @media screen and (min-width: 992px) {
+            padding: 1.8rem 0;
+          }
+        }
+      }
+    }
+
+    .btn-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex: 0 0 100%;
+      max-width: 100%;
+      margin: 1rem 0.5rem;
+
+      @media screen and (min-width: 992px) {
+        justify-content: flex-end;
+        flex: 0 0 22%;
+        max-width: 22%;
+        margin: 0;
+      }
+
+      .btn-signup {
+        display: inline-block;
+        padding: 0.8rem 2.8rem;
+        font-size: 1rem;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 5rem 5rem 5rem 0;
+        transition: background-color 0.3s linear, font-size 0.3s ease-out, padding 0.3s ease-out;
+        
+        @media screen and (min-width: 768px) {
+          padding: 0.7rem 2.5rem;
+          font-size: 0.8rem;
+        }
+
+        @media screen and (min-width: 1200px) {
+          padding: 0.8rem 2.8rem;
+          font-size: 1rem;
+        }
+
+        &:hover {
+          background-color: $candy-apple-red;     
+        }
+      }
+    }
+  }
+}
