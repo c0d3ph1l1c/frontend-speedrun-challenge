@@ -11,6 +11,7 @@ import Team from './components/Team';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Home from './components/Home';
+import Loading from './components/Loading';
 
 class App extends Component {
   constructor(props) {
@@ -56,6 +57,7 @@ class App extends Component {
         </main>
         <Footer forwardedRef={footerRef} />
         <Home />
+        <Loading />
       </div>
     );
   }
